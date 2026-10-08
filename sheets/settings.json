@@ -464,6 +464,49 @@
    "unverified": [
     "value"
    ]
+  },
+  {
+   "id": "melty_gta_version",
+   "value": "=1.0.3889.0",
+   "unit": "Melty version range",
+   "side": "melty",
+   "used_by": [],
+   "meaning": "GTA versions the release claims (must match games.supported_builds)"
+  },
+  {
+   "id": "melty_bng_launch",
+   "value": "{game:beamng-drive}/Bin64/BeamNG.drive.x64.exe",
+   "unit": "Melty path",
+   "side": "melty",
+   "used_by": [],
+   "meaning": "How Melty starts BeamNG next to GTA (recipe together)",
+   "unverified": [
+    "value"
+   ],
+   "notes": "Starting the 64-bit exe directly skips BeamNG's launcher window; needs Steam running. Check on the PC."
+  },
+  {
+   "id": "melty_bng_wait_s",
+   "value": 25,
+   "unit": "s",
+   "side": "melty",
+   "used_by": [],
+   "meaning": "Seconds Melty waits after starting BeamNG before GTA",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "melty_gta_settings",
+   "value": {
+    "Windowed": "2",
+    "PauseOnFocusLoss": "0",
+    "DoF": "false"
+   },
+   "unit": "settings.xml values",
+   "side": "melty",
+   "used_by": [],
+   "meaning": "GTA borderless window that keeps running when BeamNG has focus; no depth of field (it smears the depth the compositor tests against). Same as Melty's Minecraft x GTA V."
   }
  ]
 }

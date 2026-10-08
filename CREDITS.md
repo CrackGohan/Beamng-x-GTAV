@@ -8,11 +8,11 @@ Built with AI assistance (Claude Code).
 
 | Component | Author | License | Shipped | Used for |
 |---|---|---|---|---|
-| [ReShade (with add-on support)](https://reshade.me) 6.x (pinned at packaging) | crosire and contributors | BSD-3-Clause | yes | Loads BeamLS.addon64 and gives the compositor GTA's depth buffer; loaded by the ASI loader as ReShade64.asi |
-| [ReShade.fxh](https://github.com/crosire/reshade-shaders) slim branch (pinned at packaging) | crosire and contributors | BSD-3-Clause | yes | Depth helpers for BeamLS.fx |
-| [ReShade add-on API headers](https://github.com/crosire/reshade) matches the shipped ReShade | crosire and contributors | BSD-3-Clause | no | Compile BeamLS.addon64 |
-| [MinHook](https://github.com/TsudaKageyu/minhook) 1.3.3+ (compiled into BeamLS.asi) | Tsuda Kageyu | BSD-2-Clause | yes | Hook GTA's script thread tick so natives run on the script thread |
-| [universal-modder (Minecraft x GTA V compositor)](https://github.com/rehan-remade/universal-modder) main, 2026-10 | Rehan and universal-modder contributors | MIT | yes | Compositor and shader approach adapted into BeamLS.addon64 and BeamLS.fx |
+| [ReShade (with add-on support)](https://reshade.me) 6.8.0 (ReShade_Setup_6.8.0_Addon.exe sha256 afe4c8f13048306307983b8b3d41d5bf00a86820440b0e57dea10950e1176445) | crosire and contributors | BSD-3-Clause | yes | Loads the compositor part of BeamLS.asi as an add-on and gives it GTA's depth buffer; loaded by the ASI loader as ReShade64.asi |
+| [ReShade.fxh](https://github.com/crosire/reshade-shaders) slim fd0022170615ce0d8162d219bff07232fa6dd84f | crosire and contributors | CC0-1.0 | yes | Depth helpers for BeamLS.fx |
+| [ReShade add-on API headers](https://github.com/crosire/reshade) v6.8.0 (18deaa52de0c425a78b329e9cb3c497281cd00ec) | crosire and contributors | BSD-3-Clause | no | Compile the compositor part of BeamLS.asi |
+| [MinHook](https://github.com/TsudaKageyu/minhook) 8af6b4acae5a9388fd742b56fa79ece89d96f823 | Tsuda Kageyu | BSD-2-Clause | yes | Hook GTA's script thread tick so natives run on the script thread |
+| [universal-modder (Minecraft x GTA V compositor)](https://github.com/rehan-remade/universal-modder) main, 2026-10 | Rehan and universal-modder contributors | MIT | yes | Compositor and shader approach adapted into BeamLS.asi's compositor and BeamLS.fx |
 | [GTA V native DB data](https://github.com/alloc8or/gta5-nativedb-data) 2026-10 | alloc8or and contributors | no license stated (facts: names, hashes, signatures) | no | Native names, original hashes and signatures in sheets/natives.json |
 | [BeamNGpy](https://github.com/BeamNG/BeamNGpy) master 2026-10 | BeamNG GmbH | MIT | no | Reference for BeamNG launch arguments and level names |
 | [BeamMP](https://github.com/BeamMP/BeamMP) master 2026-10 | BeamMP Ltd. and contributors | AGPL-3.0 | no | Read only, as a reference for which BeamNG Lua functions exist; no code copied |

@@ -96,3 +96,17 @@ composited into GTA's frame.
 
 ## Log
 - 2026-10-08: interview done, plan agreed. Melty connected (no existing mods). Research done.
+- 2026-10-08: sheets, preflight (incl. code-vs-sheet check), codegen. BeamNG mod written; 80 checks pass
+  against a fake BeamNG GE environment.
+- 2026-10-08: BeamLS.asi written and cross-compiled (imports only KERNEL32, USER32, VERSION, WS2_32,
+  msvcrt). Compositor merged into the ASI (ReShade add-on registered from the ASI like universal-modder's
+  example), so no separate .addon64. Tick: detour of the PLAYER_ID native handler (settings.tick_native),
+  ticking once per GET_FRAME_COUNT, so only the native_lookup pattern is needed.
+- 2026-10-08: tests: GTA core 58/58, GTA game logic 79/79 against a fake GTA (ASan/UBSan), e2e real Lua
+  mod + real GTA logic over UDP: both sides pass (car accelerates from GTA throttle, proxy follows ~11 m in
+  2 s, 331 slabs, police proxy). Bugs found by the tests and fixed: proxy rebuild lost "warp player back
+  in"; notices dropped when two came within 0.5 s; protocol field `w` clashed with the generated writer.
+- 2026-10-08: ReShade 6.8.0 add-on build fetched (setup sha256 afe4c8f1...), headers from tag v6.8.0
+  (API 20). Package built; Melty validate_recipe: valid, 41 files placed, 0 left out; one_click_check:
+  yes. Not uploaded: the 3889 native table is empty, so the ASI would stay off in game.
+- Next: docs/PC_PHASE.md (needs the creator's Windows PC).
