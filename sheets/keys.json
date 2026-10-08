@@ -1,0 +1,24 @@
+{
+  "sheet": "keys",
+  "description": "Hotkeys the player uses. One row per key; each generates a constant and a dispatch entry (gta: gta/src/gen/keys.hpp, beamng: input action JSON + gen/keys.lua).",
+  "key": "id",
+  "columns": {
+    "id": "Key binding id",
+    "side": "gta (read by BeamLS.asi) or beamng (a BeamNG input action the mod adds)",
+    "input": "gta: vk:<hex Windows virtual key> or control:<GTA control index>; beamng: the BeamNG binding name",
+    "action": "What happens",
+    "context": "When the key is live",
+    "message": "Bridge message it causes (sheet messages)",
+    "label": "Text shown to the player (English; GTA help text)"
+  },
+  "optional": [],
+  "refs": {"message": "messages"},
+  "rows": [
+    {"id": "open_vehicles", "side": "gta", "input": "vk:0x75", "action": "Pause the car, bring BeamNG to the front with its vehicle selector open", "context": "on foot or driving, BeamNG connected, not paused", "message": "mode", "label": "F6: choose a BeamNG car"},
+    {"id": "open_tuning", "side": "gta", "input": "vk:0x76", "action": "Pause the car, bring BeamNG to the front with its tuning menu open", "context": "a BeamNG car exists, BeamNG connected", "message": "mode", "label": "F7: tune your BeamNG car"},
+    {"id": "toggle_mashup", "side": "gta", "input": "vk:0x77", "action": "Park and hide the BeamNG car and stop the mashup, or bring it back", "context": "any time in story mode", "message": "mode", "label": "F8: BeamNG on/off"},
+    {"id": "repair", "side": "gta", "input": "control:51", "action": "Repair the BeamNG car at Los Santos Customs", "context": "car stopped inside a garage zone (sheet garages)", "message": "repair", "label": "E: repair at Los Santos Customs"},
+    {"id": "back_to_gta", "side": "beamng", "input": "F6", "action": "Close BeamNG's menu and return to GTA", "context": "BeamNG menu opened by the mashup", "message": "menu_closed", "label": "F6: back to Los Santos",
+     "unverified": ["input"], "notes": "Added as BeamNG input action beamls_back with default bindings F6 and F7 (lua/ge/extensions/core/input/actions/beamls.json)."}
+  ]
+}

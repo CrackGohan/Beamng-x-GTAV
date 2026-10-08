@@ -1,0 +1,27 @@
+{
+  "sheet": "files",
+  "description": "What goes in the release and where Melty installs it. One row per file or folder in the upload; tools/package.py builds the zips from this sheet and the Melty recipe's mappings are generated from it.",
+  "key": "id",
+  "columns": {
+    "id": "Row id",
+    "component": "Melty component: main (GTA side) or beamng (BeamNG side)",
+    "from": "Source in this repo or build output",
+    "path": "Path inside the component zip",
+    "installs_to": "Melty destination (folder token + path) of the zip folder this path is in",
+    "kind": "built, generated, static or third_party",
+    "third_party": "Row in sheet third_party, or none"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": "asi", "component": "main", "from": "build/gta/BeamLS.asi", "path": "gta/BeamLS.asi", "installs_to": "{game}", "kind": "built", "third_party": "minhook"},
+    {"id": "addon", "component": "main", "from": "build/gta/BeamLS.addon64", "path": "gta/BeamLS.addon64", "installs_to": "{game}", "kind": "built", "third_party": "universal_modder"},
+    {"id": "reshade_asi", "component": "main", "from": "third_party/reshade/ReShade64.dll", "path": "gta/ReShade64.asi", "installs_to": "{game}", "kind": "third_party", "third_party": "reshade"},
+    {"id": "reshade_ini", "component": "main", "from": "gta/reshade/ReShade.ini", "path": "gta/ReShade.ini", "installs_to": "{game}", "kind": "static", "third_party": "none"},
+    {"id": "reshade_preset", "component": "main", "from": "gta/reshade/BeamLS.ini", "path": "gta/BeamLS/ReShadePreset.ini", "installs_to": "{game}", "kind": "static", "third_party": "none"},
+    {"id": "shader", "component": "main", "from": "gta/shaders/BeamLS.fx", "path": "gta/BeamLS/Shaders/BeamLS.fx", "installs_to": "{game}", "kind": "static", "third_party": "universal_modder"},
+    {"id": "shader_fxh", "component": "main", "from": "third_party/reshade-shaders/ReShade.fxh", "path": "gta/BeamLS/Shaders/ReShade.fxh", "installs_to": "{game}", "kind": "third_party", "third_party": "reshade_fxh"},
+    {"id": "credits", "component": "main", "from": "build/credits", "path": "credits/", "installs_to": "{localappdata}/BeamLS/credits", "kind": "generated", "third_party": "none"},
+    {"id": "bng_mod", "component": "beamng", "from": "beamng/mod", "path": "beamls/", "installs_to": "{localappdata}/BeamNG/BeamNG.drive/current/mods/unpacked/beamls", "kind": "static", "third_party": "none", "unverified": ["installs_to"]}
+  ]
+}

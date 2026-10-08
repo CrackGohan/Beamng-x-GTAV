@@ -1,0 +1,7 @@
+build/
+third_party/reshade/*.dll
+third_party/reshade/*.exe
+dist/
+*.o
+*.obj
+__pycache__/

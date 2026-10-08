@@ -1,0 +1,10 @@
+{
+  "beamls_back_to_gta": {
+    "cat": "beamls",
+    "order": 0,
+    "ctx": "tlua",
+    "onDown": "if beamls_main then beamls_main.onKey(\"back_to_gta\") end",
+    "title": "BeamNG x Los Santos: F6: back to Los Santos",
+    "desc": "Close BeamNG's menu and return to GTA"
+  }
+}

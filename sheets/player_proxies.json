@@ -1,0 +1,28 @@
+{
+  "sheet": "player_proxies",
+  "description": "Which invisible GTA model stands in for the player's BeamNG car, by the BeamNG car's size. First matching row wins (ordered). Size matters for GTA's chase camera distance, traffic avoidance and police rams. All proxies use an electric car's engine audio (settings.proxy_audio) so BeamNG's engine sound is what the player hears. Each row generates one entry in gta/src/gen/player_proxies.hpp.",
+  "key": "id",
+  "columns": {
+    "id": "Size class",
+    "min_length": "BeamNG car length from, m",
+    "max_length": "length up to, m",
+    "min_height": "height from, m",
+    "max_height": "height up to, m",
+    "gta_model": "GTA model name (story mode, vanilla)",
+    "gta_length": "That model's length, m (camera distance check)"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": "tiny", "min_length": 0.0, "max_length": 3.7, "min_height": 0.0, "max_height": 9.9, "gta_model": "issi2", "gta_length": 3.3, "unverified": ["gta_length"]},
+    {"id": "low_sports", "min_length": 3.7, "max_length": 5.2, "min_height": 0.0, "max_height": 1.3, "gta_model": "comet2", "gta_length": 4.3, "unverified": ["gta_length"]},
+    {"id": "compact", "min_length": 3.7, "max_length": 4.4, "min_height": 1.3, "max_height": 1.65, "gta_model": "blista", "gta_length": 4.0, "unverified": ["gta_length"]},
+    {"id": "sedan", "min_length": 4.4, "max_length": 5.2, "min_height": 1.3, "max_height": 1.65, "gta_model": "fugitive", "gta_length": 4.9, "unverified": ["gta_length"]},
+    {"id": "suv", "min_length": 4.2, "max_length": 5.4, "min_height": 1.65, "max_height": 2.05, "gta_model": "baller", "gta_length": 4.9, "unverified": ["gta_length"]},
+    {"id": "pickup", "min_length": 5.2, "max_length": 6.4, "min_height": 1.6, "max_height": 2.1, "gta_model": "bison", "gta_length": 5.6, "unverified": ["gta_length"]},
+    {"id": "van", "min_length": 4.5, "max_length": 6.8, "min_height": 2.05, "max_height": 2.9, "gta_model": "speedo", "gta_length": 5.3, "unverified": ["gta_length"]},
+    {"id": "truck", "min_length": 6.4, "max_length": 9.5, "min_height": 0.0, "max_height": 9.9, "gta_model": "mule", "gta_length": 7.5, "unverified": ["gta_length"]},
+    {"id": "bus", "min_length": 9.5, "max_length": 99.0, "min_height": 0.0, "max_height": 9.9, "gta_model": "bus", "gta_length": 12.5, "unverified": ["gta_length"]},
+    {"id": "fallback", "min_length": 0.0, "max_length": 99.0, "min_height": 0.0, "max_height": 9.9, "gta_model": "fugitive", "gta_length": 4.9, "unverified": ["gta_length"]}
+  ]
+}

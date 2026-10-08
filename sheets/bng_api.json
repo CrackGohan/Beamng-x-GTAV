@@ -1,0 +1,822 @@
+{
+ "sheet": "bng_api",
+ "description": "Every BeamNG Lua call the mod relies on. Each row generates one wrapper in beamng/mod/lua/ge/extensions/beamls/gen/bngapi.lua that runs the body in pcall, logs the first failure with the row id, and returns the fallback. That log is the in-game oracle for this sheet: after one session, every row without a 'bngapi FAIL <id>' line is verified. vm=vehicle rows are code strings the GE side sends with veh:queueLuaCommand.",
+ "key": "id",
+ "columns": {
+  "id": "Wrapper name",
+  "vm": "ge (game engine Lua) or vehicle (vehicle Lua, sent as a string)",
+  "args": "Argument names",
+  "body": "Lua statements; may use the args; return the result",
+  "purpose": "What it is for",
+  "source": "Where the API is known from: beammp (read, AGPL, facts only), beamngpy (MIT), docs, guess",
+  "fallback": "Lua expression returned when the call fails",
+  "used_by": "Systems (sheet systems)"
+ },
+ "optional": [
+  "args"
+ ],
+ "refs": {
+  "used_by": "systems"
+ },
+ "rows": [
+  {
+   "id": "socket_udp",
+   "vm": "ge",
+   "args": [],
+   "body": "local socket = require('socket')\nlocal s = socket.udp()\nreturn s",
+   "purpose": "Create a LuaSocket UDP socket",
+   "source": "beammp (require('socket') in GE Lua)",
+   "fallback": "nil",
+   "used_by": [
+    "bng_listener"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "BeamMP uses TCP from the same module; UDP is the same library."
+  },
+  {
+   "id": "ext_load",
+   "vm": "ge",
+   "args": [
+    "name"
+   ],
+   "body": "extensions.load(name)\nreturn true",
+   "purpose": "Load an extension by name",
+   "source": "beamngpy (-lua \"extensions.load('x')\"), beammp",
+   "fallback": "false",
+   "used_by": [
+    "bng_listener",
+    "bng_main"
+   ]
+  },
+  {
+   "id": "ext_unload_mode",
+   "vm": "ge",
+   "args": [
+    "name"
+   ],
+   "body": "setExtensionUnloadMode(name, 'manual')\nreturn true",
+   "purpose": "Keep an extension loaded across level loads",
+   "source": "beammp modScript, beamngpy example",
+   "fallback": "false",
+   "used_by": [
+    "bng_listener"
+   ]
+  },
+  {
+   "id": "json_encode",
+   "vm": "ge",
+   "args": [
+    "t"
+   ],
+   "body": "return jsonEncode(t)",
+   "purpose": "Encode a message",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_listener"
+   ]
+  },
+  {
+   "id": "json_decode",
+   "vm": "ge",
+   "args": [
+    "s"
+   ],
+   "body": "return jsonDecode(s)",
+   "purpose": "Decode a message",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_listener"
+   ]
+  },
+  {
+   "id": "start_freeroam",
+   "vm": "ge",
+   "args": [
+    "level"
+   ],
+   "body": "local path = core_levels.expandMissionFileName(level) or level\nfreeroam_freeroam.startFreeroam(path)\nreturn true",
+   "purpose": "Load the empty level (smallgrid)",
+   "source": "beammp MPCoreNetwork.loadLevel; smallgrid from beamngpy",
+   "fallback": "false",
+   "used_by": [
+    "bng_session"
+   ]
+  },
+  {
+   "id": "get_level_name",
+   "vm": "ge",
+   "args": [],
+   "body": "local f = getMissionFilename()\nif not f or f == '' then return nil end\nreturn f",
+   "purpose": "Which level is loaded (nil in the main menu)",
+   "source": "beammp (getMissionFilename)",
+   "fallback": "nil",
+   "used_by": [
+    "bng_session"
+   ]
+  },
+  {
+   "id": "find_object",
+   "vm": "ge",
+   "args": [
+    "name"
+   ],
+   "body": "return scenetree.findObject(name)",
+   "purpose": "Find a scene object by name",
+   "source": "docs",
+   "fallback": "nil",
+   "used_by": [
+    "bng_session"
+   ]
+  },
+  {
+   "id": "hide_object",
+   "vm": "ge",
+   "args": [
+    "obj",
+    "hidden"
+   ],
+   "body": "obj:setHidden(hidden)\nreturn true",
+   "purpose": "Hide sky and ground plane so only the car renders",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_session"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "set_clear_color",
+   "vm": "ge",
+   "args": [
+    "r",
+    "g",
+    "b"
+   ],
+   "body": "local li = scenetree.findObject('theLevelInfo')\nli:setField('canvasClearColor', 0, string.format('%d %d %d 255', r, g, b))\nreturn true",
+   "purpose": "Key-colour background behind the car",
+   "source": "guess (Torque3D LevelInfo.canvasClearColor)",
+   "fallback": "false",
+   "used_by": [
+    "bng_session"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ui_hide",
+   "vm": "ge",
+   "args": [],
+   "body": "guihooks.trigger('ShowApps', false)\nreturn true",
+   "purpose": "Hide BeamNG's HUD apps from the captured picture",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu",
+    "bng_session"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ui_show",
+   "vm": "ge",
+   "args": [],
+   "body": "guihooks.trigger('ShowApps', true)\nreturn true",
+   "purpose": "Show BeamNG's UI again (menus, normal play)",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "sim_pause",
+   "vm": "ge",
+   "args": [
+    "paused"
+   ],
+   "body": "simTimeAuthority.pause(paused)\nreturn true",
+   "purpose": "Freeze physics while GTA is paused or a menu is open",
+   "source": "beammp (simTimeAuthority.pause)",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu",
+    "bng_session"
+   ]
+  },
+  {
+   "id": "cam_free",
+   "vm": "ge",
+   "args": [],
+   "body": "commands.setFreeCamera()\nreturn true",
+   "purpose": "Switch to the free camera we drive from GTA",
+   "source": "beammp",
+   "fallback": "false",
+   "used_by": [
+    "bng_camera"
+   ]
+  },
+  {
+   "id": "cam_set_pos_rot",
+   "vm": "ge",
+   "args": [
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw"
+   ],
+   "body": "core_camera.setPosRot(0, x, y, z, qx, qy, qz, qw)\nreturn true",
+   "purpose": "Place the camera",
+   "source": "beammp",
+   "fallback": "false",
+   "used_by": [
+    "bng_camera"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "Axis convention of the quaternion (forward +Y?) must be checked with the gold-box test."
+  },
+  {
+   "id": "cam_set_fov",
+   "vm": "ge",
+   "args": [
+    "fov"
+   ],
+   "body": "core_camera.setFOV(0, fov)\nreturn true",
+   "purpose": "Match GTA's field of view",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_camera"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "Whether BeamNG's FOV is vertical or horizontal is unknown; camera.lua converts per settings.bng_fov_is_vertical."
+  },
+  {
+   "id": "get_player_vehicle",
+   "vm": "ge",
+   "args": [],
+   "body": "return be:getPlayerVehicle(0)",
+   "purpose": "The player's car",
+   "source": "docs, beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "veh_get_position",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "local p = veh:getPosition()\nreturn p.x, p.y, p.z",
+   "purpose": "Car position",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "veh_get_rotation",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "local q = quatFromDir(-veh:getDirectionVector(), veh:getDirectionVectorUp())\nreturn q.x, q.y, q.z, q.w",
+   "purpose": "Car rotation (BeamNG convention: forward -Y)",
+   "source": "beammp positionGE",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ],
+   "notes": "quatFromDir(dir, up) builds a rotation whose +Y is dir; with dir = -forward this is BeamNG's vehicle frame."
+  },
+  {
+   "id": "veh_get_velocity",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "local v = veh:getVelocity()\nreturn v.x, v.y, v.z",
+   "purpose": "Car velocity",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "veh_get_bbox",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "local b = veh:getSpawnWorldOOBB()\nlocal c = b:getCenter()\nlocal h = b:getHalfExtents()\nreturn c.x, c.y, c.z, h.x, h.y, h.z",
+   "purpose": "Oriented box around the car for the compositor's depth",
+   "source": "guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "veh_set_pos_rot",
+   "vm": "ge",
+   "args": [
+    "veh",
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw"
+   ],
+   "body": "spawn.safeTeleport(veh, vec3(x, y, z), quat(qx, qy, qz, qw), false)\nreturn true",
+   "purpose": "Teleport the car (spawn_at) keeping it intact",
+   "source": "beammp (spawn.safeTeleport)",
+   "fallback": "false",
+   "used_by": [
+    "bng_player_car"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "BeamMP calls safeTeleport(veh, pos, rot, false); check whether it resets damage."
+  },
+  {
+   "id": "veh_get_model",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "local model = veh:getJBeamFilename()\nlocal config = veh.partConfig or ''\nlocal name = model\nlocal info = core_vehicles.getModel(model)\nif info and info.model and info.model.Name then name = info.model.Name end\nreturn model, config, name",
+   "purpose": "Which car and configuration the player has",
+   "source": "beammp (getJBeamFilename); core_vehicles.getModel guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "spawn_vehicle",
+   "vm": "ge",
+   "args": [
+    "model",
+    "config",
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw"
+   ],
+   "body": "local opts = {config = config, pos = vec3(x, y, z), rot = quat(qx, qy, qz, qw), autoEnterVehicle = false, cling = false}\nreturn core_vehicles.spawnNewVehicle(model, opts)",
+   "purpose": "Spawn the player's first car or a traffic proxy",
+   "source": "beammp (core_vehicles.spawnNewVehicle(model, {config=...}))",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "pos/rot/autoEnterVehicle option names are a guess."
+  },
+  {
+   "id": "veh_queue_lua",
+   "vm": "ge",
+   "args": [
+    "veh",
+    "code"
+   ],
+   "body": "veh:queueLuaCommand(code)\nreturn true",
+   "purpose": "Run code in the car's vehicle VM",
+   "source": "beammp",
+   "fallback": "false",
+   "used_by": [
+    "bng_input",
+    "bng_player_car",
+    "bng_repair"
+   ]
+  },
+  {
+   "id": "veh_get_damage",
+   "vm": "ge",
+   "args": [
+    "vid"
+   ],
+   "body": "local o = map.objects[vid]\nif not o then return 0 end\nreturn o.damage or 0",
+   "purpose": "Damage figure for logs and the HUD",
+   "source": "guess (map.objects[id].damage)",
+   "fallback": "0",
+   "used_by": [
+    "bng_player_car"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ve_input_event",
+   "vm": "vehicle",
+   "args": [
+    "name",
+    "value"
+   ],
+   "body": "input.event(name, value, FILTER_DIRECT, nil, nil, nil, 'beamls')",
+   "purpose": "Feed one control value to the car",
+   "source": "beammp MPInputsVE",
+   "fallback": "nil",
+   "used_by": [
+    "bng_input"
+   ]
+  },
+  {
+   "id": "ve_input_allowed_source",
+   "vm": "vehicle",
+   "args": [
+    "name",
+    "allowLocal"
+   ],
+   "body": "input.setAllowedInputSource(name, 'local', allowLocal)\ninput.setAllowedInputSource(name, 'beamls', true)",
+   "purpose": "Stop BeamNG's own keyboard input fighting GTA's",
+   "source": "beammp MPInputsVE",
+   "fallback": "nil",
+   "used_by": [
+    "bng_input"
+   ]
+  },
+  {
+   "id": "ve_horn",
+   "vm": "vehicle",
+   "args": [
+    "on"
+   ],
+   "body": "electrics.horn(on)",
+   "purpose": "Horn",
+   "source": "beammp MPElectricsVE",
+   "fallback": "nil",
+   "used_by": [
+    "bng_input"
+   ]
+  },
+  {
+   "id": "ve_lights",
+   "vm": "vehicle",
+   "args": [],
+   "body": "electrics.toggle_lights()",
+   "purpose": "Toggle headlights",
+   "source": "guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_input"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ve_reset_physics",
+   "vm": "vehicle",
+   "args": [],
+   "body": "obj:requestReset(RESET_PHYSICS)",
+   "purpose": "Repair the car in place",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_repair"
+   ],
+   "unverified": [
+    "purpose"
+   ],
+   "notes": "Check it repairs without moving the car."
+  },
+  {
+   "id": "veh_reset_flexmesh",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "veh:resetBrokenFlexMesh()\nreturn true",
+   "purpose": "Restore broken visual meshes after a repair",
+   "source": "beammp",
+   "fallback": "false",
+   "used_by": [
+    "bng_repair"
+   ]
+  },
+  {
+   "id": "create_tsstatic",
+   "vm": "ge",
+   "args": [
+    "shape",
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw",
+    "sx",
+    "sy",
+    "sz"
+   ],
+   "body": "local o = createObject('TSStatic')\no:setField('shapeName', 0, shape)\no:setField('collisionType', 0, 'Visible Mesh')\no:setPosRot(x, y, z, qx, qy, qz, qw)\no:setScale(vec3(sx, sy, sz))\no:registerObject('')\nscenetree.MissionGroup:addObject(o)\nreturn o",
+   "purpose": "Invisible collision slab or post",
+   "source": "guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_ground",
+    "bng_walls"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "delete_object",
+   "vm": "ge",
+   "args": [
+    "obj"
+   ],
+   "body": "obj:delete()\nreturn true",
+   "purpose": "Remove a slab or proxy",
+   "source": "docs (SimObject.delete)",
+   "fallback": "false",
+   "used_by": [
+    "bng_ground",
+    "bng_traffic",
+    "bng_walls"
+   ]
+  },
+  {
+   "id": "reload_static_collision",
+   "vm": "ge",
+   "args": [],
+   "body": "be:reloadStaticCollision(true)\nreturn true",
+   "purpose": "Make new slabs solid",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_ground",
+    "bng_walls"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "veh_set_cluster_pos_rot",
+   "vm": "ge",
+   "args": [
+    "veh",
+    "ref",
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw"
+   ],
+   "body": "veh:setClusterPosRelRot(ref, x, y, z, qx, qy, qz, qw)\nreturn true",
+   "purpose": "Move a traffic proxy without resetting it",
+   "source": "beammp positionGE",
+   "fallback": "false",
+   "used_by": [
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "veh_apply_cluster_velocity",
+   "vm": "ge",
+   "args": [
+    "veh",
+    "ref",
+    "vx",
+    "vy",
+    "vz"
+   ],
+   "body": "veh:applyClusterVelocityScaleAdd(ref, 1, vx, vy, vz)\nreturn true",
+   "purpose": "Give a traffic proxy GTA's velocity so rams carry momentum",
+   "source": "beammp positionGE",
+   "fallback": "false",
+   "used_by": [
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "veh_get_ref_node",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "return veh:getRefNodeId()",
+   "purpose": "Reference node for cluster moves",
+   "source": "beammp",
+   "fallback": "nil",
+   "used_by": [
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "ui_open_vehicles",
+   "vm": "ge",
+   "args": [],
+   "body": "guihooks.trigger('ChangeState', {state = 'menu.vehicles'})\nreturn true",
+   "purpose": "Open BeamNG's vehicle selector",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ui_open_tuning",
+   "vm": "ge",
+   "args": [],
+   "body": "guihooks.trigger('ChangeState', {state = 'menu.vehicleconfig.tuning'})\nreturn true",
+   "purpose": "Open BeamNG's tuning menu",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "ui_state_hook",
+   "vm": "ge",
+   "args": [],
+   "body": "return 'onUiChangedState'",
+   "purpose": "Name of the GE hook BeamNG calls when the UI changes screen (menu.js state change)",
+   "source": "guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_menu"
+   ],
+   "unverified": [
+    "body"
+   ],
+   "notes": "If the hook never fires, the player returns with F6/F7 in BeamNG (sheet keys) or by clicking GTA."
+  },
+  {
+   "id": "allow_set_foreground",
+   "vm": "ge",
+   "args": [],
+   "body": "local ffi = require('ffi')\npcall(ffi.cdef, 'int AllowSetForegroundWindow(unsigned long dwProcessId);')\nreturn ffi.load('user32').AllowSetForegroundWindow(0xFFFFFFFF) ~= 0",
+   "purpose": "Let GTA take keyboard focus back after a BeamNG menu",
+   "source": "guess (BeamMP references ffi in GE)",
+   "fallback": "false",
+   "used_by": [
+    "bng_menu"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "set_time_of_day",
+   "vm": "ge",
+   "args": [
+    "t"
+   ],
+   "body": "core_environment.setTimeOfDay({time = t, play = false})\nreturn true",
+   "purpose": "Sun position from GTA's clock (t: 0 = noon, 0.5 = midnight)",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_time"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "create_water_plane",
+   "vm": "ge",
+   "args": [
+    "z"
+   ],
+   "body": "local o = createObject('WaterPlane')\no:setPosition(vec3(0, 0, z))\no:registerObject('beamls_ocean')\nscenetree.MissionGroup:addObject(o)\nreturn o",
+   "purpose": "Ocean at GTA's sea level",
+   "source": "guess",
+   "fallback": "nil",
+   "used_by": [
+    "bng_water"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "on_update_hook",
+   "vm": "ge",
+   "args": [],
+   "body": "return 'onUpdate'",
+   "purpose": "Per-frame GE hook (dtReal, dtSim, dtRaw)",
+   "source": "beammp, beamngpy",
+   "fallback": "nil",
+   "used_by": [
+    "bng_main"
+   ]
+  },
+  {
+   "id": "veh_get_id",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "return veh:getID()",
+   "purpose": "Numeric id of a vehicle (for map.objects and bookkeeping)",
+   "source": "docs (SimObject.getID)",
+   "fallback": "nil",
+   "used_by": [
+    "bng_player_car",
+    "bng_traffic"
+   ]
+  },
+  {
+   "id": "set_object_transform",
+   "vm": "ge",
+   "args": [
+    "obj",
+    "x",
+    "y",
+    "z",
+    "qx",
+    "qy",
+    "qz",
+    "qw",
+    "sx",
+    "sy",
+    "sz"
+   ],
+   "body": "obj:setPosRot(x, y, z, qx, qy, qz, qw)\nobj:setScale(vec3(sx, sy, sz))\nreturn true",
+   "purpose": "Move and resize an existing slab (reuse instead of create/delete)",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_ground",
+    "bng_walls"
+   ],
+   "unverified": [
+    "body"
+   ]
+  },
+  {
+   "id": "enter_vehicle",
+   "vm": "ge",
+   "args": [
+    "veh"
+   ],
+   "body": "be:enterVehicle(0, veh)\nreturn true",
+   "purpose": "Make sure the player's car stays the player vehicle after spawning traffic proxies",
+   "source": "guess",
+   "fallback": "false",
+   "used_by": [
+    "bng_traffic"
+   ],
+   "unverified": [
+    "body"
+   ]
+  }
+ ]
+}

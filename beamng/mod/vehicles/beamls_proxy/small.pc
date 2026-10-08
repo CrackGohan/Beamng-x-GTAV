@@ -1,0 +1,13 @@
+{
+  "format": 2,
+  "model": "beamls_proxy",
+  "parts": {
+    "beamls_proxy_body": "beamls_proxy_body"
+  },
+  "vars": {
+    "$length": 4.0,
+    "$width": 1.8,
+    "$height": 1.45,
+    "$mass": 1200
+  }
+}
