@@ -61,20 +61,6 @@ function M.ext_load(name)
   return unpack(res, 2, table.maxn(res))
 end
 
--- ext_unload_mode: Keep an extension loaded across level loads (source: beammp modScript, beamngpy example)
-function M.ext_unload_mode(name)
-  local res = {pcall(function()
-    setExtensionUnloadMode(name, 'manual')
-    return true
-  end)}
-  if not res[1] then
-    logFail("ext_unload_mode", res[2])
-    return false
-  end
-  M.ok["ext_unload_mode"] = true
-  return unpack(res, 2, table.maxn(res))
-end
-
 -- json_encode: Encode a message (source: beammp)
 function M.json_encode(t)
   local res = {pcall(function()
@@ -615,19 +601,6 @@ function M.create_water_plane(z)
     return nil
   end
   M.ok["create_water_plane"] = true
-  return unpack(res, 2, table.maxn(res))
-end
-
--- on_update_hook: Per-frame GE hook (dtReal, dtSim, dtRaw) (source: beammp, beamngpy)
-function M.on_update_hook()
-  local res = {pcall(function()
-    return 'onUpdate'
-  end)}
-  if not res[1] then
-    logFail("on_update_hook", res[2])
-    return nil
-  end
-  M.ok["on_update_hook"] = true
   return unpack(res, 2, table.maxn(res))
 end
 

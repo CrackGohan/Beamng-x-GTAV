@@ -68,7 +68,6 @@ namespace HUD
 namespace MISC
 {
 	inline int GET_FRAME_COUNT() { return beamls::invoke<int>(0xFC8202EFC642E6F2ull); }
-	inline int GET_GAME_TIMER() { return beamls::invoke<int>(0x9CD27B0045628463ull); }
 	inline void GET_MODEL_DIMENSIONS(Hash modelHash, Vector3* minimum, Vector3* maximum) { beamls::invoke<void>(0x03E8D3D5F549087Aull, modelHash, minimum, maximum); }
 }
 
@@ -89,9 +88,6 @@ namespace PAD
 namespace PED
 {
 	inline int GET_PED_NEARBY_VEHICLES(Ped ped, Any* sizeAndVehs) { return beamls::invoke<int>(0xCFF869CBFA210D82ull, ped, sizeAndVehs); }
-	inline Vehicle GET_VEHICLE_PED_IS_ENTERING(Ped ped) { return beamls::invoke<Vehicle>(0xF92691AED837A5FCull, ped); }
-	inline Vehicle GET_VEHICLE_PED_IS_IN(Ped ped, BOOL includeEntering) { return beamls::invoke<Vehicle>(0x9A9112A0FE9A4713ull, ped, includeEntering); }
-	inline BOOL IS_PED_IN_ANY_VEHICLE(Ped ped, BOOL atGetIn) { return beamls::invoke<BOOL>(0x997ABD671D25CA0Bull, ped, atGetIn); }
 	inline BOOL IS_PED_IN_VEHICLE(Ped ped, Vehicle vehicle, BOOL atGetIn) { return beamls::invoke<BOOL>(0xA3EE4A07279BB9DBull, ped, vehicle, atGetIn); }
 }
 

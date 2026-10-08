@@ -1,53 +1,469 @@
 {
-  "sheet": "settings",
-  "description": "Every tunable number and name. One row per setting; each generates a constant on the side(s) that use it (gta/src/gen/settings.hpp, beamng gen/settings.lua). Change values here, then run tools/gen.py.",
-  "key": "id",
-  "columns": {
-    "id": "Setting name",
-    "value": "Value (number, string, bool or list)",
-    "unit": "Unit or type",
-    "side": "gta, beamng or both",
-    "used_by": "Systems that read it (sheet systems)",
-    "meaning": "What it controls"
+ "sheet": "settings",
+ "description": "Every tunable number and name. One row per setting; each generates a constant on the side(s) that use it (gta/src/gen/settings.hpp, beamng gen/settings.lua). Change values here, then run tools/gen.py.",
+ "key": "id",
+ "columns": {
+  "id": "Setting name",
+  "value": "Value (number, string, bool or list)",
+  "unit": "Unit or type",
+  "side": "gta, beamng or both",
+  "used_by": "Systems that read it (sheet systems)",
+  "meaning": "What it controls"
+ },
+ "optional": [],
+ "refs": {
+  "used_by": "systems"
+ },
+ "rows": [
+  {
+   "id": "bridge_port",
+   "value": 47011,
+   "unit": "udp port",
+   "side": "both",
+   "used_by": [
+    "gta_bridge",
+    "bng_listener"
+   ],
+   "meaning": "Port BeamNG listens on, 127.0.0.1 only"
   },
-  "optional": [],
-  "refs": {"used_by": "systems"},
-  "rows": [
-    {"id": "bridge_port", "value": 47011, "unit": "udp port", "side": "both", "used_by": ["gta_bridge", "bng_listener"], "meaning": "Port BeamNG listens on, 127.0.0.1 only"},
-    {"id": "hello_interval_ms", "value": 1000, "unit": "ms", "side": "gta", "used_by": ["gta_bridge"], "meaning": "Hello resend interval until acknowledged"},
-    {"id": "peer_timeout_ms", "value": 3000, "unit": "ms", "side": "both", "used_by": ["gta_bridge", "bng_listener"], "meaning": "No datagram for this long = the other game is gone"},
-    {"id": "level", "value": "smallgrid", "unit": "BeamNG level", "side": "beamng", "used_by": ["bng_session"], "meaning": "Empty level the car drives in"},
-    {"id": "hide_objects", "value": ["sunsky", "GroundPlane", "theGroundPlane", "ScatterSky", "sky", "Grid"], "unit": "object names", "side": "beamng", "used_by": ["bng_session"], "meaning": "Scene objects hidden so only the car renders (any that exist)", "unverified": ["value"]},
-    {"id": "key_color", "value": [255, 0, 255], "unit": "rgb", "side": "both", "used_by": ["bng_session", "gta_compositor"], "meaning": "Background colour the compositor keys out"},
-    {"id": "key_tolerance", "value": 0.18, "unit": "0..1 rgb distance", "side": "gta", "used_by": ["gta_compositor"], "meaning": "How close to the key colour counts as background"},
-    {"id": "bng_fov_is_vertical", "value": true, "unit": "bool", "side": "beamng", "used_by": ["bng_camera"], "meaning": "Whether core_camera.setFOV takes a vertical FOV like GTA", "unverified": ["value"]},
-    {"id": "bng_cam_forward_is_y", "value": true, "unit": "bool", "side": "beamng", "used_by": ["bng_camera"], "meaning": "Whether BeamNG's camera quaternion looks along +Y like GTA's", "unverified": ["value"]},
-    {"id": "origin", "value": [0.0, 0.0, 0.0], "unit": "m", "side": "both", "used_by": ["bng_camera", "bng_player_car", "bng_ground", "bng_walls", "bng_traffic"], "meaning": "BeamNG world = GTA world minus origin"},
-    {"id": "ground_n", "value": 17, "unit": "points per side", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Ground grid is n x n points"},
-    {"id": "ground_step", "value": 2.0, "unit": "m", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Ground grid spacing"},
-    {"id": "ground_probe_up", "value": 2.5, "unit": "m", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Downward probes start this far above the car (so bridges and tunnels give the surface the car is on)"},
-    {"id": "ground_probe_down", "value": 25.0, "unit": "m", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Downward probe length"},
-    {"id": "ground_rate_hz", "value": 5, "unit": "Hz", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Ground grid updates per second"},
-    {"id": "ground_lookahead_s", "value": 0.6, "unit": "s", "side": "gta", "used_by": ["gta_ground_probe"], "meaning": "Grid centre leads the car by velocity times this"},
-    {"id": "probes_per_tick", "value": 48, "unit": "shape tests", "side": "gta", "used_by": ["gta_ground_probe", "gta_wall_probe"], "meaning": "Budget of shape tests started per game frame"},
-    {"id": "wall_rays", "value": 32, "unit": "rays", "side": "gta", "used_by": ["gta_wall_probe"], "meaning": "Rays per ring around the car"},
-    {"id": "wall_range", "value": 18.0, "unit": "m", "side": "gta", "used_by": ["gta_wall_probe"], "meaning": "Ray length"},
-    {"id": "wall_heights", "value": [0.45, 1.1], "unit": "m above ground", "side": "gta", "used_by": ["gta_wall_probe"], "meaning": "Heights of the two rings"},
-    {"id": "wall_rate_hz", "value": 10, "unit": "Hz", "side": "gta", "used_by": ["gta_wall_probe"], "meaning": "Wall rings per second"},
-    {"id": "prop_min_size", "value": 0.5, "unit": "m", "side": "gta", "used_by": ["gta_wall_probe"], "meaning": "Props thinner than this break off in GTA and are not mirrored"},
-    {"id": "traffic_range", "value": 35.0, "unit": "m", "side": "gta", "used_by": ["gta_traffic"], "meaning": "GTA vehicles closer than this get a BeamNG proxy"},
-    {"id": "traffic_max", "value": 12, "unit": "vehicles", "side": "both", "used_by": ["gta_traffic", "bng_traffic"], "meaning": "Most proxies at once"},
-    {"id": "traffic_rate_hz", "value": 20, "unit": "Hz", "side": "gta", "used_by": ["gta_traffic"], "meaning": "Traffic updates per second"},
-    {"id": "proxy_snap_distance", "value": 4.0, "unit": "m", "side": "gta", "used_by": ["gta_proxy_car"], "meaning": "GTA proxy further than this from the BeamNG car is teleported instead of steered"},
-    {"id": "proxy_audio", "value": "CYCLONE", "unit": "GTA audio game object", "side": "gta", "used_by": ["gta_proxy_car"], "meaning": "Engine audio for the invisible proxy (electric = near silent)", "unverified": ["value"]},
-    {"id": "spawn_side_offset", "value": 3.5, "unit": "m", "side": "gta", "used_by": ["gta_proxy_car"], "meaning": "New BeamNG car appears this far to the player's right"},
-    {"id": "park_distance", "value": 250.0, "unit": "m", "side": "gta", "used_by": ["gta_main"], "meaning": "Player further than this from the car: stop probing and park"},
-    {"id": "online_scripts", "value": ["freemode", "maintransition", "fm_main_menu"], "unit": "script names", "side": "gta", "used_by": ["gta_online_guard"], "meaning": "Any of these running means GTA Online is starting: shut down", "unverified": ["value"]},
-    {"id": "repair_hold_speed", "value": 1.0, "unit": "m/s", "side": "gta", "used_by": ["gta_repair_zones"], "meaning": "Car must be slower than this to offer repair"},
-    {"id": "slab_shape", "value": "/art/shapes/beamls/slab.dae", "unit": "BeamNG path", "side": "beamng", "used_by": ["bng_ground", "bng_walls"], "meaning": "Unit cube mesh with an invisible material used for every slab", "unverified": ["value"]},
-    {"id": "slab_collision_reload_ms", "value": 250, "unit": "ms", "side": "beamng", "used_by": ["bng_ground", "bng_walls"], "meaning": "Batch slab changes and rebuild static collision at most this often"},
-    {"id": "ocean_z", "value": 0.0, "unit": "m", "side": "beamng", "used_by": ["bng_water"], "meaning": "GTA sea level"},
-    {"id": "time_rate_s", "value": 5, "unit": "s", "side": "gta", "used_by": ["gta_time_sync"], "meaning": "Clock sync interval"},
-    {"id": "log_file", "value": "BeamLS/BeamLS.log", "unit": "path from GTA folder", "side": "gta", "used_by": ["gta_main"], "meaning": "Where BeamLS.asi writes its log"}
-  ]
+  {
+   "id": "hello_interval_ms",
+   "value": 1000,
+   "unit": "ms",
+   "side": "gta",
+   "used_by": [
+    "gta_bridge"
+   ],
+   "meaning": "Hello resend interval until acknowledged"
+  },
+  {
+   "id": "peer_timeout_ms",
+   "value": 3000,
+   "unit": "ms",
+   "side": "both",
+   "used_by": [
+    "gta_bridge",
+    "bng_listener"
+   ],
+   "meaning": "No datagram for this long = the other game is gone"
+  },
+  {
+   "id": "level",
+   "value": "smallgrid",
+   "unit": "BeamNG level",
+   "side": "beamng",
+   "used_by": [
+    "bng_session"
+   ],
+   "meaning": "Empty level the car drives in"
+  },
+  {
+   "id": "hide_objects",
+   "value": [
+    "sunsky",
+    "GroundPlane",
+    "theGroundPlane",
+    "ScatterSky",
+    "sky",
+    "Grid"
+   ],
+   "unit": "object names",
+   "side": "beamng",
+   "used_by": [
+    "bng_session"
+   ],
+   "meaning": "Scene objects hidden so only the car renders (any that exist)",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "key_color",
+   "value": [
+    255,
+    0,
+    255
+   ],
+   "unit": "rgb",
+   "side": "both",
+   "used_by": [
+    "bng_session",
+    "gta_compositor"
+   ],
+   "meaning": "Background colour the compositor keys out"
+  },
+  {
+   "id": "key_tolerance",
+   "value": 0.18,
+   "unit": "0..1 rgb distance",
+   "side": "gta",
+   "used_by": [
+    "gta_compositor"
+   ],
+   "meaning": "How close to the key colour counts as background"
+  },
+  {
+   "id": "bng_fov_is_vertical",
+   "value": true,
+   "unit": "bool",
+   "side": "beamng",
+   "used_by": [
+    "bng_camera"
+   ],
+   "meaning": "Whether core_camera.setFOV takes a vertical FOV like GTA",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "bng_cam_forward_is_y",
+   "value": true,
+   "unit": "bool",
+   "side": "beamng",
+   "used_by": [
+    "bng_camera"
+   ],
+   "meaning": "Whether BeamNG's camera quaternion looks along +Y like GTA's",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "origin",
+   "value": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "unit": "m",
+   "side": "both",
+   "used_by": [
+    "bng_camera",
+    "bng_player_car",
+    "bng_ground",
+    "bng_walls",
+    "bng_traffic"
+   ],
+   "meaning": "BeamNG world = GTA world minus origin"
+  },
+  {
+   "id": "ground_n",
+   "value": 17,
+   "unit": "points per side",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Ground grid is n x n points"
+  },
+  {
+   "id": "ground_step",
+   "value": 2.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Ground grid spacing"
+  },
+  {
+   "id": "ground_probe_up",
+   "value": 2.5,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Downward probes start this far above the car (so bridges and tunnels give the surface the car is on)"
+  },
+  {
+   "id": "ground_probe_down",
+   "value": 25.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Downward probe length"
+  },
+  {
+   "id": "ground_rate_hz",
+   "value": 5,
+   "unit": "Hz",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Ground grid updates per second"
+  },
+  {
+   "id": "ground_lookahead_s",
+   "value": 0.6,
+   "unit": "s",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe"
+   ],
+   "meaning": "Grid centre leads the car by velocity times this"
+  },
+  {
+   "id": "probes_per_tick",
+   "value": 48,
+   "unit": "shape tests",
+   "side": "gta",
+   "used_by": [
+    "gta_ground_probe",
+    "gta_wall_probe"
+   ],
+   "meaning": "Budget of shape tests started per game frame"
+  },
+  {
+   "id": "wall_rays",
+   "value": 32,
+   "unit": "rays",
+   "side": "gta",
+   "used_by": [
+    "gta_wall_probe"
+   ],
+   "meaning": "Rays per ring around the car"
+  },
+  {
+   "id": "wall_range",
+   "value": 18.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_wall_probe"
+   ],
+   "meaning": "Ray length"
+  },
+  {
+   "id": "wall_heights",
+   "value": [
+    0.45,
+    1.1
+   ],
+   "unit": "m above ground",
+   "side": "gta",
+   "used_by": [
+    "gta_wall_probe"
+   ],
+   "meaning": "Heights of the two rings"
+  },
+  {
+   "id": "wall_rate_hz",
+   "value": 10,
+   "unit": "Hz",
+   "side": "gta",
+   "used_by": [
+    "gta_wall_probe"
+   ],
+   "meaning": "Wall rings per second"
+  },
+  {
+   "id": "prop_min_size",
+   "value": 0.5,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_wall_probe"
+   ],
+   "meaning": "Props thinner than this break off in GTA and are not mirrored"
+  },
+  {
+   "id": "traffic_range",
+   "value": 35.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_traffic"
+   ],
+   "meaning": "GTA vehicles closer than this get a BeamNG proxy"
+  },
+  {
+   "id": "traffic_max",
+   "value": 12,
+   "unit": "vehicles",
+   "side": "both",
+   "used_by": [
+    "gta_traffic",
+    "bng_traffic"
+   ],
+   "meaning": "Most proxies at once"
+  },
+  {
+   "id": "traffic_rate_hz",
+   "value": 20,
+   "unit": "Hz",
+   "side": "gta",
+   "used_by": [
+    "gta_traffic"
+   ],
+   "meaning": "Traffic updates per second"
+  },
+  {
+   "id": "proxy_snap_distance",
+   "value": 4.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_proxy_car"
+   ],
+   "meaning": "GTA proxy further than this from the BeamNG car is teleported instead of steered"
+  },
+  {
+   "id": "proxy_audio",
+   "value": "CYCLONE",
+   "unit": "GTA audio game object",
+   "side": "gta",
+   "used_by": [
+    "gta_proxy_car"
+   ],
+   "meaning": "Engine audio for the invisible proxy (electric = near silent)",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "spawn_side_offset",
+   "value": 3.5,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_proxy_car"
+   ],
+   "meaning": "New BeamNG car appears this far to the player's right"
+  },
+  {
+   "id": "park_distance",
+   "value": 250.0,
+   "unit": "m",
+   "side": "gta",
+   "used_by": [
+    "gta_main"
+   ],
+   "meaning": "Player further than this from the car: stop probing and park"
+  },
+  {
+   "id": "online_scripts",
+   "value": [
+    "freemode",
+    "maintransition",
+    "fm_main_menu"
+   ],
+   "unit": "script names",
+   "side": "gta",
+   "used_by": [
+    "gta_online_guard"
+   ],
+   "meaning": "Any of these running means GTA Online is starting: shut down",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "repair_hold_speed",
+   "value": 1.0,
+   "unit": "m/s",
+   "side": "gta",
+   "used_by": [
+    "gta_repair_zones"
+   ],
+   "meaning": "Car must be slower than this to offer repair"
+  },
+  {
+   "id": "slab_shape",
+   "value": "/art/shapes/beamls/slab.dae",
+   "unit": "BeamNG path",
+   "side": "beamng",
+   "used_by": [
+    "bng_ground",
+    "bng_walls"
+   ],
+   "meaning": "Unit cube mesh with an invisible material used for every slab",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "slab_collision_reload_ms",
+   "value": 250,
+   "unit": "ms",
+   "side": "beamng",
+   "used_by": [
+    "bng_ground",
+    "bng_walls"
+   ],
+   "meaning": "Batch slab changes and rebuild static collision at most this often"
+  },
+  {
+   "id": "ocean_z",
+   "value": 0.0,
+   "unit": "m",
+   "side": "beamng",
+   "used_by": [
+    "bng_water"
+   ],
+   "meaning": "GTA sea level"
+  },
+  {
+   "id": "time_rate_s",
+   "value": 5,
+   "unit": "s",
+   "side": "gta",
+   "used_by": [
+    "gta_time_sync"
+   ],
+   "meaning": "Clock sync interval"
+  },
+  {
+   "id": "log_file",
+   "value": "BeamLS/BeamLS.log",
+   "unit": "path from GTA folder",
+   "side": "gta",
+   "used_by": [
+    "gta_main"
+   ],
+   "meaning": "Where BeamLS.asi writes its log"
+  },
+  {
+   "id": "tick_native",
+   "value": "PLAYER_ID",
+   "unit": "native name (sheet natives)",
+   "side": "gta",
+   "used_by": [
+    "gta_script_tick"
+   ],
+   "meaning": "Native whose handler BeamLS detours to run once per frame on the script thread (every story-mode script calls it)",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "gta_cam_lag_frames",
+   "value": 0,
+   "unit": "frames",
+   "side": "gta",
+   "used_by": [
+    "gta_compositor"
+   ],
+   "meaning": "Which recent GTA camera matches the presented picture (universal-modder measured 0 for its compositor)",
+   "unverified": [
+    "value"
+   ]
+  },
+  {
+   "id": "capture_lag_frames",
+   "value": 2,
+   "unit": "BeamNG frames",
+   "side": "gta",
+   "used_by": [
+    "gta_compositor"
+   ],
+   "meaning": "How many BeamNG frames old the captured picture is; picks the car pose and camera to re-project from",
+   "unverified": [
+    "value"
+   ]
+  }
+ ]
 }

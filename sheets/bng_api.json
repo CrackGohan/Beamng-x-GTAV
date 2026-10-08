@@ -46,21 +46,6 @@
    "source": "beamngpy (-lua \"extensions.load('x')\"), beammp",
    "fallback": "false",
    "used_by": [
-    "bng_listener",
-    "bng_main"
-   ]
-  },
-  {
-   "id": "ext_unload_mode",
-   "vm": "ge",
-   "args": [
-    "name"
-   ],
-   "body": "setExtensionUnloadMode(name, 'manual')\nreturn true",
-   "purpose": "Keep an extension loaded across level loads",
-   "source": "beammp modScript, beamngpy example",
-   "fallback": "false",
-   "used_by": [
     "bng_listener"
    ]
   },
@@ -194,7 +179,8 @@
    "source": "guess",
    "fallback": "false",
    "used_by": [
-    "bng_menu"
+    "bng_menu",
+    "bng_session"
    ],
    "unverified": [
     "body"
@@ -211,7 +197,6 @@
    "source": "beammp (simTimeAuthority.pause)",
    "fallback": "false",
    "used_by": [
-    "bng_menu",
     "bng_session"
    ]
   },
@@ -293,8 +278,7 @@
    "source": "beammp",
    "fallback": "nil",
    "used_by": [
-    "bng_player_car",
-    "bng_traffic"
+    "bng_player_car"
    ]
   },
   {
@@ -690,7 +674,7 @@
    "source": "guess",
    "fallback": "nil",
    "used_by": [
-    "bng_menu"
+    "bng_main"
    ],
    "unverified": [
     "body"
@@ -747,18 +731,6 @@
    ]
   },
   {
-   "id": "on_update_hook",
-   "vm": "ge",
-   "args": [],
-   "body": "return 'onUpdate'",
-   "purpose": "Per-frame GE hook (dtReal, dtSim, dtRaw)",
-   "source": "beammp, beamngpy",
-   "fallback": "nil",
-   "used_by": [
-    "bng_main"
-   ]
-  },
-  {
    "id": "veh_get_id",
    "vm": "ge",
    "args": [
@@ -769,8 +741,7 @@
    "source": "docs (SimObject.getID)",
    "fallback": "nil",
    "used_by": [
-    "bng_player_car",
-    "bng_traffic"
+    "bng_player_car"
    ]
   },
   {

@@ -65,7 +65,9 @@ function fakeSock:sendto(data, ip, port)
   return #data
 end
 function fakeSock:close() F.bound = nil end
-package.preload['socket'] = function() return {udp = function() return setmetatable({}, fakeSock) end} end
+if not BEAMLS_REAL_SOCKET then
+  package.preload['socket'] = function() return {udp = function() return setmetatable({}, fakeSock) end} end
+end
 
 function F.deliver(t, port)
   F.inbox[#F.inbox + 1] = {data = json.encode(t), ip = '127.0.0.1', port = port or 50123}
@@ -164,6 +166,8 @@ be = {
 }
 spawn = {safeTeleport = function(veh, pos, rot, reset)
   veh.pos = {x = pos.x, y = pos.y, z = pos.z}
+  local f = mathx.rotate(mathx.q(rot.x, rot.y, rot.z, rot.w), {x = 0, y = -1, z = 0}) -- BeamNG cars face -Y
+  veh.dir = {x = f.x, y = f.y, z = f.z}
   rec('safeTeleport', veh.id, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, rot.w)
 end}
 core_vehicles = {

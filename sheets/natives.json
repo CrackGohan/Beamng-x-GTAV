@@ -118,7 +118,8 @@
    ],
    "since_build": 323,
    "used_by": [
-    "gta_input"
+    "gta_input",
+    "gta_repair_zones"
    ],
    "xmap": {
     "3889": ""
@@ -250,8 +251,8 @@
    ],
    "since_build": 323,
    "used_by": [
+    "gta_ground_probe",
     "gta_proxy_car",
-    "gta_repair_zones",
     "gta_traffic"
    ],
    "xmap": {
@@ -305,7 +306,6 @@
    ],
    "since_build": 323,
    "used_by": [
-    "gta_proxy_car",
     "gta_traffic"
    ],
    "xmap": {
@@ -410,21 +410,7 @@
    "params": [],
    "since_build": 323,
    "used_by": [
-    "gta_main"
-   ],
-   "xmap": {
-    "3889": ""
-   }
-  },
-  {
-   "id": "GET_GAME_TIMER",
-   "ns": "MISC",
-   "hash": "0x9CD27B0045628463",
-   "ret": "int",
-   "params": [],
-   "since_build": 323,
-   "used_by": [
-    "gta_main"
+    "gta_script_tick"
    ],
    "xmap": {
     "3889": ""
@@ -535,39 +521,6 @@
    }
   },
   {
-   "id": "GET_VEHICLE_PED_IS_ENTERING",
-   "ns": "PED",
-   "hash": "0xF92691AED837A5FC",
-   "ret": "Vehicle",
-   "params": [
-    "Ped ped"
-   ],
-   "since_build": 323,
-   "used_by": [
-    "gta_proxy_car"
-   ],
-   "xmap": {
-    "3889": ""
-   }
-  },
-  {
-   "id": "GET_VEHICLE_PED_IS_IN",
-   "ns": "PED",
-   "hash": "0x9A9112A0FE9A4713",
-   "ret": "Vehicle",
-   "params": [
-    "Ped ped",
-    "BOOL includeEntering"
-   ],
-   "since_build": 323,
-   "used_by": [
-    "gta_main"
-   ],
-   "xmap": {
-    "3889": ""
-   }
-  },
-  {
    "id": "HAS_MODEL_LOADED",
    "ns": "STREAMING",
    "hash": "0x98A4EB5D89A0C952",
@@ -622,6 +575,7 @@
    ],
    "since_build": 323,
    "used_by": [
+    "gta_input",
     "gta_repair_zones"
    ],
    "xmap": {
@@ -685,25 +639,7 @@
    "params": [],
    "since_build": 323,
    "used_by": [
-    "gta_hotkeys",
     "gta_state_gate"
-   ],
-   "xmap": {
-    "3889": ""
-   }
-  },
-  {
-   "id": "IS_PED_IN_ANY_VEHICLE",
-   "ns": "PED",
-   "hash": "0x997ABD671D25CA0B",
-   "ret": "BOOL",
-   "params": [
-    "Ped ped",
-    "BOOL atGetIn"
-   ],
-   "since_build": 323,
-   "used_by": [
-    "gta_main"
    ],
    "xmap": {
     "3889": ""
@@ -721,7 +657,7 @@
    ],
    "since_build": 323,
    "used_by": [
-    "gta_proxy_car"
+    "gta_main"
    ],
    "xmap": {
     "3889": ""
@@ -807,6 +743,7 @@
    "params": [],
    "since_build": 323,
    "used_by": [
+    "gta_script_tick",
     "gta_state_gate"
    ],
    "xmap": {
@@ -821,7 +758,7 @@
    "params": [],
    "since_build": 323,
    "used_by": [
-    "gta_proxy_car"
+    "gta_main"
    ],
    "xmap": {
     "3889": ""

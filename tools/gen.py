@@ -156,15 +156,15 @@ def camel(s):
 
 def cpp_encode_scalar(name, typ, expr):
     if typ == "f32":
-        return f"w.num(\"{name}\", {expr});"
+        return f"jw_.num(\"{name}\", {expr});"
     if typ in ("i32", "u32"):
-        return f"w.integer(\"{name}\", static_cast<long long>({expr}));"
+        return f"jw_.integer(\"{name}\", static_cast<long long>({expr}));"
     if typ == "bool":
-        return f"w.boolean(\"{name}\", {expr});"
+        return f"jw_.boolean(\"{name}\", {expr});"
     if typ == "str":
-        return f"w.str(\"{name}\", {expr});"
+        return f"jw_.str(\"{name}\", {expr});"
     if typ == "f32[]":
-        return f"w.floats(\"{name}\", {expr});"
+        return f"jw_.floats(\"{name}\", {expr});"
     raise ValueError(typ)
 
 
@@ -206,34 +206,34 @@ def gen_protocol():
             else:
                 o.append(f"\t\t{CPP_FIELD[typ]} {name}{CPP_DEFAULT[typ]}; // {f[2]}\n")
         # encode
-        o.append("\n\t\tstd::string encode() const\n\t\t{\n\t\t\tjson::Writer w;\n\t\t\tw.begin();\n\t\t\tw.str(\"t\", kType);\n")
+        o.append("\n\t\tstd::string encode() const\n\t\t{\n\t\t\tjson::Writer jw_;\n\t\t\tjw_.begin();\n\t\t\tjw_.str(\"t\", kType);\n")
         for f in m["fields"]:
             name, typ = f[0], f[1]
             if typ == "rec[]":
-                o.append(f"\t\t\tw.beginArray(\"{name}\");\n\t\t\tfor (const auto& r : {name})\n\t\t\t{{\n\t\t\t\tw.beginRow();\n")
+                o.append(f"\t\t\tjw_.beginArray(\"{name}\");\n\t\t\tfor (const auto& r : this->{name})\n\t\t\t{{\n\t\t\t\tjw_.beginRow();\n")
                 for rf in f[3]:
                     if rf[1] == "f32":
-                        o.append(f"\t\t\t\tw.rowNum(r.{rf[0]});\n")
+                        o.append(f"\t\t\t\tjw_.rowNum(r.{rf[0]});\n")
                     elif rf[1] in ("i32", "u32"):
-                        o.append(f"\t\t\t\tw.rowInt(static_cast<long long>(r.{rf[0]}));\n")
+                        o.append(f"\t\t\t\tjw_.rowInt(static_cast<long long>(r.{rf[0]}));\n")
                     else:
                         raise ValueError("rec fields must be numeric")
-                o.append("\t\t\t\tw.endRow();\n\t\t\t}\n\t\t\tw.endArray();\n")
+                o.append("\t\t\t\tjw_.endRow();\n\t\t\t}\n\t\t\tjw_.endArray();\n")
             else:
-                o.append(f"\t\t\t{cpp_encode_scalar(name, typ, name)}\n")
-        o.append("\t\t\tw.end();\n\t\t\treturn w.take();\n\t\t}\n")
+                o.append(f"\t\t\t{cpp_encode_scalar(name, typ, 'this->' + name)}\n")
+        o.append("\t\t\tjw_.end();\n\t\t\treturn jw_.take();\n\t\t}\n")
         # decode
-        o.append("\n\t\tbool decode(const json::Value& v)\n\t\t{\n\t\t\tif (!v.isObject()) return false;\n")
+        o.append("\n\t\tbool decode(const json::Value& jv_)\n\t\t{\n\t\t\tif (!jv_.isObject()) return false;\n")
         for f in m["fields"]:
             name, typ = f[0], f[1]
             if typ == "rec[]":
-                o.append(f"\t\t\t{name}.clear();\n\t\t\tif (const json::Value* a = v.get(\"{name}\"))\n\t\t\t{{\n\t\t\t\tfor (const auto& row : a->arr())\n\t\t\t\t{{\n")
-                o.append(f"\t\t\t\t\tconst auto& c = row.arr();\n\t\t\t\t\tif (c.size() < {len(f[3])}) continue;\n\t\t\t\t\t{name}.emplace_back();\n\t\t\t\t\tauto& r = {name}.back();\n")
+                o.append(f"\t\t\tthis->{name}.clear();\n\t\t\tif (const json::Value* ja_ = jv_.get(\"{name}\"))\n\t\t\t{{\n\t\t\t\tfor (const auto& row : ja_->arr())\n\t\t\t\t{{\n")
+                o.append(f"\t\t\t\t\tconst auto& c = row.arr();\n\t\t\t\t\tif (c.size() < {len(f[3])}) continue;\n\t\t\t\t\tthis->{name}.emplace_back();\n\t\t\t\t\tauto& r = this->{name}.back();\n")
                 for i, rf in enumerate(f[3]):
                     o.append(f"\t\t\t\t\t{cpp_decode_scalar(rf[1], f'c[{i}]', 'r.' + rf[0])}\n")
                 o.append("\t\t\t\t}\n\t\t\t}\n")
             else:
-                o.append(f"\t\t\tif (const json::Value* f = v.get(\"{name}\")) {{ {cpp_decode_scalar(typ, '(*f)', name)} }}\n")
+                o.append(f"\t\t\tif (const json::Value* jf_ = jv_.get(\"{name}\")) {{ {cpp_decode_scalar(typ, '(*jf_)', 'this->' + name)} }}\n")
         o.append("\t\t\treturn true;\n\t\t}\n\t};\n\n")
     o.append("}\n")
     write(os.path.join(GTA_GEN, "protocol.hpp"), "".join(o))
@@ -469,6 +469,20 @@ def gen_tables():
     write(os.path.join(GTA_GEN, "garages.hpp"), "".join(c))
 
 
+def gen_patterns():
+    sheet = load("patterns")
+    c = [HEADER_CPP.format(sheet="patterns"), "#pragma once\n\nnamespace beamls::gen\n{\n"]
+    c.append("\tstruct PatternResolve { const char* name; int offset; };\n")
+    c.append("\tstruct PatternRow { const char* id; const char* bytes; const PatternResolve* resolves; int resolveCount; };\n")
+    for r in sheet["rows"]:
+        c.append(f"\tinline constexpr PatternResolve kResolve_{r['id']}[] = {{" + ", ".join(f"{{\"{n}\", {o}}}" for n, o in r["resolves"]) + "};\n")
+    c.append("\tinline constexpr PatternRow kPatterns[] = {\n")
+    for r in sheet["rows"]:
+        c.append(f"\t\t{{\"{r['id']}\", \"{r['bytes']}\", kResolve_{r['id']}, {len(r['resolves'])}}}, // {r['purpose']}\n")
+    c.append("\t};\n}\n")
+    write(os.path.join(GTA_GEN, "patterns.hpp"), "".join(c))
+
+
 def gen_bng_assets():
     """beamls_proxy jbeam (rigid invisible box sized by .pc variables) and the slab unit cube."""
     tp = load("traffic_proxies")["rows"]
@@ -608,6 +622,7 @@ def main():
     gen_settings()
     gen_bngapi()
     gen_tables()
+    gen_patterns()
     gen_bng_assets()
     gen_credits()
     d = digest()

@@ -1,0 +1,24 @@
+{
+  "sheet": "patterns",
+  "description": "Byte patterns BeamLS.asi searches for in GTA5.exe's code (after it is unpacked in memory). One row per pattern; each generates one entry in gta/src/gen/patterns.hpp. Every resolve is read as a RIP-relative 32-bit displacement at the given offset (target = address after the 4 bytes + displacement). All rows need confirming on each supported build in the running game; BeamLS.log lists what each pattern found.",
+  "key": "id",
+  "columns": {
+    "id": "Pattern id",
+    "bytes": "IDA-style bytes, ? = any byte",
+    "purpose": "What the code at the match does",
+    "resolves": "[[name, offset of the rel32 from the match start], ...]",
+    "source": "Where the pattern comes from",
+    "used_by": "Systems (sheet systems)"
+  },
+  "optional": [],
+  "refs": {"used_by": "systems"},
+  "rows": [
+    {"id": "native_lookup",
+     "bytes": "48 8D 0D ? ? ? ? 48 8B 14 FA E8 ? ? ? ? 48 85 C0 75 0A",
+     "purpose": "Script program load: lea rcx, [native registration table]; mov rdx, [native hash]; call GetNativeHandler(table, hash); test rax, rax",
+     "resolves": [["native_table", 3], ["get_native_handler", 12]],
+     "source": "Public GTA V script-hook projects (BigBaseV2 lineage); recalled, not checked against build 3889",
+     "used_by": ["gta_patterns", "gta_invoker"],
+     "unverified": ["bytes", "resolves"]}
+  ]
+}

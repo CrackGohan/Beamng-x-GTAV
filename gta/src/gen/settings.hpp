@@ -61,4 +61,10 @@ namespace beamls::settings
 	inline constexpr int time_rate_s = 5;
 	// Where BeamLS.asi writes its log (path from GTA folder)
 	inline constexpr const char* log_file = "BeamLS/BeamLS.log";
+	// Native whose handler BeamLS detours to run once per frame on the script thread (every story-mode script calls it) (native name (sheet natives))
+	inline constexpr const char* tick_native = "PLAYER_ID";
+	// Which recent GTA camera matches the presented picture (universal-modder measured 0 for its compositor) (frames)
+	inline constexpr int gta_cam_lag_frames = 0;
+	// How many BeamNG frames old the captured picture is; picks the car pose and camera to re-project from (BeamNG frames)
+	inline constexpr int capture_lag_frames = 2;
 }

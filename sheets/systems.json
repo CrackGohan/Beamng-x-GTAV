@@ -85,7 +85,10 @@
    "depends_on": [
     "gta_patterns"
    ],
-   "natives": [],
+   "natives": [
+    "PLAYER_ID",
+    "GET_FRAME_COUNT"
+   ],
    "bng_api": [],
    "messages": [],
    "oracle": "Tick counter in BeamLS.log matches GET_FRAME_COUNT; CREATE_VEHICLE returns a vehicle",
@@ -165,7 +168,8 @@
    "natives": [
     "DISABLE_CONTROL_ACTION",
     "GET_DISABLED_CONTROL_NORMAL",
-    "IS_DISABLED_CONTROL_PRESSED"
+    "IS_DISABLED_CONTROL_PRESSED",
+    "IS_DISABLED_CONTROL_JUST_PRESSED"
    ],
    "bng_api": [],
    "messages": [
@@ -185,7 +189,6 @@
     "gta_script_tick"
    ],
    "natives": [
-    "PLAYER_PED_ID",
     "REQUEST_MODEL",
     "HAS_MODEL_LOADED",
     "IS_MODEL_IN_CDIMAGE",
@@ -207,10 +210,7 @@
     "SET_ENTITY_VELOCITY",
     "SET_ENTITY_ANGULAR_VELOCITY",
     "GET_ENTITY_COORDS",
-    "GET_ENTITY_QUATERNION",
     "GET_ENTITY_HEADING",
-    "IS_PED_IN_VEHICLE",
-    "GET_VEHICLE_PED_IS_ENTERING",
     "TASK_WARP_PED_INTO_VEHICLE",
     "IS_ENTITY_IN_WATER",
     "FORCE_USE_AUDIO_GAME_OBJECT",
@@ -238,7 +238,8 @@
    ],
    "natives": [
     "START_SHAPE_TEST_LOS_PROBE",
-    "GET_SHAPE_TEST_RESULT"
+    "GET_SHAPE_TEST_RESULT",
+    "GET_ENTITY_COORDS"
    ],
    "bng_api": [],
    "messages": [
@@ -305,9 +306,7 @@
     "gta_bridge",
     "gta_focus"
    ],
-   "natives": [
-    "IS_PAUSE_MENU_ACTIVE"
-   ],
+   "natives": [],
    "bng_api": [],
    "messages": [
     "mode",
@@ -319,7 +318,7 @@
    "id": "gta_focus",
    "game": "gta-v",
    "process": "BeamLS.asi",
-   "module": "gta/src/game/focus.cpp",
+   "module": "gta/src/core/platform_win.cpp",
    "purpose": "Find the BeamNG and GTA windows and switch keyboard focus between them for the menus",
    "depends_on": [],
    "natives": [],
@@ -344,8 +343,8 @@
     "gta_proxy_car"
    ],
    "natives": [
-    "GET_ENTITY_COORDS",
-    "IS_DISABLED_CONTROL_JUST_PRESSED"
+    "IS_DISABLED_CONTROL_JUST_PRESSED",
+    "DISABLE_CONTROL_ACTION"
    ],
    "bng_api": [],
    "messages": [
@@ -441,10 +440,8 @@
     "gta_composite_state"
    ],
    "natives": [
-    "GET_GAME_TIMER",
-    "GET_FRAME_COUNT",
-    "IS_PED_IN_ANY_VEHICLE",
-    "GET_VEHICLE_PED_IS_IN"
+    "IS_PED_IN_VEHICLE",
+    "PLAYER_PED_ID"
    ],
    "bng_api": [],
    "messages": [
@@ -472,7 +469,7 @@
   {
    "id": "gta_capture",
    "game": "gta-v",
-   "process": "BeamLS.addon64",
+   "process": "BeamLS.asi",
    "module": "gta/src/addon/capture.cpp",
    "purpose": "Capture BeamNG's window with Windows Graphics Capture straight onto GTA's D3D11 device",
    "depends_on": [
@@ -489,7 +486,7 @@
   {
    "id": "gta_compositor",
    "game": "gta-v",
-   "process": "BeamLS.addon64",
+   "process": "BeamLS.asi",
    "module": "gta/src/addon/compositor.cpp",
    "purpose": "ReShade effect pass: key out BeamNG's background, depth-test the car against GTA's depth buffer using the car's box, re-project to the current camera",
    "depends_on": [
@@ -515,7 +512,6 @@
    "bng_api": [
     "socket_udp",
     "ext_load",
-    "ext_unload_mode",
     "json_encode",
     "json_decode"
    ],
@@ -542,7 +538,8 @@
     "hide_object",
     "set_clear_color",
     "ui_hide",
-    "sim_pause"
+    "sim_pause",
+    "ui_show"
    ],
    "messages": [
     "status",
@@ -683,10 +680,8 @@
     "veh_get_ref_node",
     "veh_get_velocity",
     "veh_get_rotation",
-    "veh_get_id",
     "enter_vehicle",
-    "get_player_vehicle",
-    "veh_get_position"
+    "get_player_vehicle"
    ],
    "messages": [
     "traffic"
@@ -707,10 +702,8 @@
    "bng_api": [
     "ui_open_vehicles",
     "ui_open_tuning",
-    "ui_state_hook",
     "ui_show",
     "ui_hide",
-    "sim_pause",
     "allow_set_foreground"
    ],
    "messages": [
@@ -796,8 +789,7 @@
    ],
    "natives": [],
    "bng_api": [
-    "ext_load",
-    "on_update_hook"
+    "ui_state_hook"
    ],
    "messages": [
     "mode",

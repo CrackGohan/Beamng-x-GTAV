@@ -19,22 +19,22 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("proto", static_cast<long long>(proto));
-			w.str("gta_build", gta_build);
-			w.integer("session", static_cast<long long>(session));
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("proto", static_cast<long long>(this->proto));
+			jw_.str("gta_build", this->gta_build);
+			jw_.integer("session", static_cast<long long>(this->session));
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("proto")) { proto = static_cast<std::int32_t>((*f).num()); }
-			if (const json::Value* f = v.get("gta_build")) { gta_build = (*f).str(); }
-			if (const json::Value* f = v.get("session")) { session = static_cast<std::uint32_t>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("proto")) { this->proto = static_cast<std::int32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("gta_build")) { this->gta_build = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("session")) { this->session = static_cast<std::uint32_t>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -50,24 +50,24 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("proto", static_cast<long long>(proto));
-			w.str("bng_version", bng_version);
-			w.integer("session", static_cast<long long>(session));
-			w.boolean("ready", ready);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("proto", static_cast<long long>(this->proto));
+			jw_.str("bng_version", this->bng_version);
+			jw_.integer("session", static_cast<long long>(this->session));
+			jw_.boolean("ready", this->ready);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("proto")) { proto = static_cast<std::int32_t>((*f).num()); }
-			if (const json::Value* f = v.get("bng_version")) { bng_version = (*f).str(); }
-			if (const json::Value* f = v.get("session")) { session = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("ready")) { ready = (*f).boolean(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("proto")) { this->proto = static_cast<std::int32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("bng_version")) { this->bng_version = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("session")) { this->session = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("ready")) { this->ready = (*jf_).boolean(); }
 			return true;
 		}
 	};
@@ -80,18 +80,18 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.str("reason", reason);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.str("reason", this->reason);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("reason")) { reason = (*f).str(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("reason")) { this->reason = (*jf_).str(); }
 			return true;
 		}
 	};
@@ -105,20 +105,20 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.str("state", state);
-			w.str("reason", reason);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.str("state", this->state);
+			jw_.str("reason", this->reason);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("state")) { state = (*f).str(); }
-			if (const json::Value* f = v.get("reason")) { reason = (*f).str(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("state")) { this->state = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("reason")) { this->reason = (*jf_).str(); }
 			return true;
 		}
 	};
@@ -142,40 +142,40 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.num("px", px);
-			w.num("py", py);
-			w.num("pz", pz);
-			w.num("qx", qx);
-			w.num("qy", qy);
-			w.num("qz", qz);
-			w.num("qw", qw);
-			w.num("fov", fov);
-			w.num("near", near);
-			w.integer("w", static_cast<long long>(w));
-			w.integer("h", static_cast<long long>(h));
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.num("px", this->px);
+			jw_.num("py", this->py);
+			jw_.num("pz", this->pz);
+			jw_.num("qx", this->qx);
+			jw_.num("qy", this->qy);
+			jw_.num("qz", this->qz);
+			jw_.num("qw", this->qw);
+			jw_.num("fov", this->fov);
+			jw_.num("near", this->near);
+			jw_.integer("w", static_cast<long long>(this->w));
+			jw_.integer("h", static_cast<long long>(this->h));
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("px")) { px = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("py")) { py = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("pz")) { pz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qx")) { qx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qy")) { qy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qz")) { qz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qw")) { qw = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("fov")) { fov = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("near")) { near = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("w")) { w = static_cast<std::int32_t>((*f).num()); }
-			if (const json::Value* f = v.get("h")) { h = static_cast<std::int32_t>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("px")) { this->px = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("py")) { this->py = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("pz")) { this->pz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qx")) { this->qx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qy")) { this->qy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qz")) { this->qz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qw")) { this->qw = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("fov")) { this->fov = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("near")) { this->near = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("w")) { this->w = static_cast<std::int32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("h")) { this->h = static_cast<std::int32_t>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -194,30 +194,30 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.num("throttle", throttle);
-			w.num("brake", brake);
-			w.num("steer", steer);
-			w.num("handbrake", handbrake);
-			w.boolean("horn", horn);
-			w.boolean("lights", lights);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.num("throttle", this->throttle);
+			jw_.num("brake", this->brake);
+			jw_.num("steer", this->steer);
+			jw_.num("handbrake", this->handbrake);
+			jw_.boolean("horn", this->horn);
+			jw_.boolean("lights", this->lights);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("throttle")) { throttle = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("brake")) { brake = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("steer")) { steer = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("handbrake")) { handbrake = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("horn")) { horn = (*f).boolean(); }
-			if (const json::Value* f = v.get("lights")) { lights = (*f).boolean(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("throttle")) { this->throttle = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("brake")) { this->brake = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("steer")) { this->steer = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("handbrake")) { this->handbrake = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("horn")) { this->horn = (*jf_).boolean(); }
+			if (const json::Value* jf_ = jv_.get("lights")) { this->lights = (*jf_).boolean(); }
 			return true;
 		}
 	};
@@ -235,28 +235,28 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.num("ox", ox);
-			w.num("oy", oy);
-			w.num("step", step);
-			w.integer("n", static_cast<long long>(n));
-			w.floats("z", z);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.num("ox", this->ox);
+			jw_.num("oy", this->oy);
+			jw_.num("step", this->step);
+			jw_.integer("n", static_cast<long long>(this->n));
+			jw_.floats("z", this->z);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("ox")) { ox = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("oy")) { oy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("step")) { step = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("n")) { n = static_cast<std::int32_t>((*f).num()); }
-			if (const json::Value* f = v.get("z")) { z.clear(); for (const auto& e : (*f).arr()) z.push_back(static_cast<float>(e.num())); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("ox")) { this->ox = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("oy")) { this->oy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("step")) { this->step = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("n")) { this->n = static_cast<std::int32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("z")) { this->z.clear(); for (const auto& e : (*jf_).arr()) this->z.push_back(static_cast<float>(e.num())); }
 			return true;
 		}
 	};
@@ -281,42 +281,42 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.beginArray("hits");
-			for (const auto& r : hits)
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.beginArray("hits");
+			for (const auto& r : this->hits)
 			{
-				w.beginRow();
-				w.rowNum(r.x);
-				w.rowNum(r.y);
-				w.rowNum(r.z);
-				w.rowNum(r.nx);
-				w.rowNum(r.ny);
-				w.rowNum(r.nz);
-				w.rowInt(static_cast<long long>(r.kind));
-				w.rowNum(r.size);
-				w.endRow();
+				jw_.beginRow();
+				jw_.rowNum(r.x);
+				jw_.rowNum(r.y);
+				jw_.rowNum(r.z);
+				jw_.rowNum(r.nx);
+				jw_.rowNum(r.ny);
+				jw_.rowNum(r.nz);
+				jw_.rowInt(static_cast<long long>(r.kind));
+				jw_.rowNum(r.size);
+				jw_.endRow();
 			}
-			w.endArray();
-			w.end();
-			return w.take();
+			jw_.endArray();
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			hits.clear();
-			if (const json::Value* a = v.get("hits"))
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			this->hits.clear();
+			if (const json::Value* ja_ = jv_.get("hits"))
 			{
-				for (const auto& row : a->arr())
+				for (const auto& row : ja_->arr())
 				{
 					const auto& c = row.arr();
 					if (c.size() < 8) continue;
-					hits.emplace_back();
-					auto& r = hits.back();
+					this->hits.emplace_back();
+					auto& r = this->hits.back();
 					r.x = static_cast<float>(c[0].num());
 					r.y = static_cast<float>(c[1].num());
 					r.z = static_cast<float>(c[2].num());
@@ -358,49 +358,49 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.beginArray("cars");
-			for (const auto& r : cars)
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.beginArray("cars");
+			for (const auto& r : this->cars)
 			{
-				w.beginRow();
-				w.rowInt(static_cast<long long>(r.id));
-				w.rowInt(static_cast<long long>(r.cls));
-				w.rowNum(r.x);
-				w.rowNum(r.y);
-				w.rowNum(r.z);
-				w.rowNum(r.qx);
-				w.rowNum(r.qy);
-				w.rowNum(r.qz);
-				w.rowNum(r.qw);
-				w.rowNum(r.vx);
-				w.rowNum(r.vy);
-				w.rowNum(r.vz);
-				w.rowNum(r.l);
-				w.rowNum(r.w);
-				w.rowNum(r.h);
-				w.endRow();
+				jw_.beginRow();
+				jw_.rowInt(static_cast<long long>(r.id));
+				jw_.rowInt(static_cast<long long>(r.cls));
+				jw_.rowNum(r.x);
+				jw_.rowNum(r.y);
+				jw_.rowNum(r.z);
+				jw_.rowNum(r.qx);
+				jw_.rowNum(r.qy);
+				jw_.rowNum(r.qz);
+				jw_.rowNum(r.qw);
+				jw_.rowNum(r.vx);
+				jw_.rowNum(r.vy);
+				jw_.rowNum(r.vz);
+				jw_.rowNum(r.l);
+				jw_.rowNum(r.w);
+				jw_.rowNum(r.h);
+				jw_.endRow();
 			}
-			w.endArray();
-			w.end();
-			return w.take();
+			jw_.endArray();
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			cars.clear();
-			if (const json::Value* a = v.get("cars"))
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			this->cars.clear();
+			if (const json::Value* ja_ = jv_.get("cars"))
 			{
-				for (const auto& row : a->arr())
+				for (const auto& row : ja_->arr())
 				{
 					const auto& c = row.arr();
 					if (c.size() < 15) continue;
-					cars.emplace_back();
-					auto& r = cars.back();
+					this->cars.emplace_back();
+					auto& r = this->cars.back();
 					r.id = static_cast<std::int32_t>(c[0].num());
 					r.cls = static_cast<std::int32_t>(c[1].num());
 					r.x = static_cast<float>(c[2].num());
@@ -433,24 +433,24 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.num("x", x);
-			w.num("y", y);
-			w.num("z", z);
-			w.num("heading", heading);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.num("x", this->x);
+			jw_.num("y", this->y);
+			jw_.num("z", this->z);
+			jw_.num("heading", this->heading);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("x")) { x = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("y")) { y = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("z")) { z = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("heading")) { heading = static_cast<float>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("x")) { this->x = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("y")) { this->y = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("z")) { this->z = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("heading")) { this->heading = static_cast<float>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -463,18 +463,18 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.str("garage", garage);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.str("garage", this->garage);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("garage")) { garage = (*f).str(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("garage")) { this->garage = (*jf_).str(); }
 			return true;
 		}
 	};
@@ -488,20 +488,20 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("hour", static_cast<long long>(hour));
-			w.integer("minute", static_cast<long long>(minute));
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("hour", static_cast<long long>(this->hour));
+			jw_.integer("minute", static_cast<long long>(this->minute));
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("hour")) { hour = static_cast<std::int32_t>((*f).num()); }
-			if (const json::Value* f = v.get("minute")) { minute = static_cast<std::int32_t>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("hour")) { this->hour = static_cast<std::int32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("minute")) { this->minute = static_cast<std::int32_t>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -536,62 +536,62 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.integer("seq", static_cast<long long>(seq));
-			w.integer("cam_seq", static_cast<long long>(cam_seq));
-			w.num("x", x);
-			w.num("y", y);
-			w.num("z", z);
-			w.num("qx", qx);
-			w.num("qy", qy);
-			w.num("qz", qz);
-			w.num("qw", qw);
-			w.num("vx", vx);
-			w.num("vy", vy);
-			w.num("vz", vz);
-			w.num("wx", wx);
-			w.num("wy", wy);
-			w.num("wz", wz);
-			w.num("bx", bx);
-			w.num("by", by);
-			w.num("bz", bz);
-			w.num("hx", hx);
-			w.num("hy", hy);
-			w.num("hz", hz);
-			w.num("speed", speed);
-			w.num("damage", damage);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.integer("seq", static_cast<long long>(this->seq));
+			jw_.integer("cam_seq", static_cast<long long>(this->cam_seq));
+			jw_.num("x", this->x);
+			jw_.num("y", this->y);
+			jw_.num("z", this->z);
+			jw_.num("qx", this->qx);
+			jw_.num("qy", this->qy);
+			jw_.num("qz", this->qz);
+			jw_.num("qw", this->qw);
+			jw_.num("vx", this->vx);
+			jw_.num("vy", this->vy);
+			jw_.num("vz", this->vz);
+			jw_.num("wx", this->wx);
+			jw_.num("wy", this->wy);
+			jw_.num("wz", this->wz);
+			jw_.num("bx", this->bx);
+			jw_.num("by", this->by);
+			jw_.num("bz", this->bz);
+			jw_.num("hx", this->hx);
+			jw_.num("hy", this->hy);
+			jw_.num("hz", this->hz);
+			jw_.num("speed", this->speed);
+			jw_.num("damage", this->damage);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("seq")) { seq = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("cam_seq")) { cam_seq = static_cast<std::uint32_t>((*f).num()); }
-			if (const json::Value* f = v.get("x")) { x = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("y")) { y = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("z")) { z = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qx")) { qx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qy")) { qy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qz")) { qz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("qw")) { qw = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("vx")) { vx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("vy")) { vy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("vz")) { vz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("wx")) { wx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("wy")) { wy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("wz")) { wz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("bx")) { bx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("by")) { by = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("bz")) { bz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("hx")) { hx = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("hy")) { hy = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("hz")) { hz = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("speed")) { speed = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("damage")) { damage = static_cast<float>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("seq")) { this->seq = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("cam_seq")) { this->cam_seq = static_cast<std::uint32_t>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("x")) { this->x = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("y")) { this->y = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("z")) { this->z = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qx")) { this->qx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qy")) { this->qy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qz")) { this->qz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("qw")) { this->qw = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("vx")) { this->vx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("vy")) { this->vy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("vz")) { this->vz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("wx")) { this->wx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("wy")) { this->wy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("wz")) { this->wz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("bx")) { this->bx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("by")) { this->by = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("bz")) { this->bz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("hx")) { this->hx = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("hy")) { this->hy = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("hz")) { this->hz = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("speed")) { this->speed = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("damage")) { this->damage = static_cast<float>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -610,30 +610,30 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.str("model", model);
-			w.str("config", config);
-			w.str("name", name);
-			w.num("length", length);
-			w.num("width", width);
-			w.num("height", height);
-			w.num("mass", mass);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.str("model", this->model);
+			jw_.str("config", this->config);
+			jw_.str("name", this->name);
+			jw_.num("length", this->length);
+			jw_.num("width", this->width);
+			jw_.num("height", this->height);
+			jw_.num("mass", this->mass);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("model")) { model = (*f).str(); }
-			if (const json::Value* f = v.get("config")) { config = (*f).str(); }
-			if (const json::Value* f = v.get("name")) { name = (*f).str(); }
-			if (const json::Value* f = v.get("length")) { length = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("width")) { width = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("height")) { height = static_cast<float>((*f).num()); }
-			if (const json::Value* f = v.get("mass")) { mass = static_cast<float>((*f).num()); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("model")) { this->model = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("config")) { this->config = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("name")) { this->name = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("length")) { this->length = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("width")) { this->width = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("height")) { this->height = static_cast<float>((*jf_).num()); }
+			if (const json::Value* jf_ = jv_.get("mass")) { this->mass = static_cast<float>((*jf_).num()); }
 			return true;
 		}
 	};
@@ -646,18 +646,18 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.boolean("changed", changed);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.boolean("changed", this->changed);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("changed")) { changed = (*f).boolean(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("changed")) { this->changed = (*jf_).boolean(); }
 			return true;
 		}
 	};
@@ -671,20 +671,20 @@ namespace beamls::msg
 
 		std::string encode() const
 		{
-			json::Writer w;
-			w.begin();
-			w.str("t", kType);
-			w.str("state", state);
-			w.str("msg", msg);
-			w.end();
-			return w.take();
+			json::Writer jw_;
+			jw_.begin();
+			jw_.str("t", kType);
+			jw_.str("state", this->state);
+			jw_.str("msg", this->msg);
+			jw_.end();
+			return jw_.take();
 		}
 
-		bool decode(const json::Value& v)
+		bool decode(const json::Value& jv_)
 		{
-			if (!v.isObject()) return false;
-			if (const json::Value* f = v.get("state")) { state = (*f).str(); }
-			if (const json::Value* f = v.get("msg")) { msg = (*f).str(); }
+			if (!jv_.isObject()) return false;
+			if (const json::Value* jf_ = jv_.get("state")) { this->state = (*jf_).str(); }
+			if (const json::Value* jf_ = jv_.get("msg")) { this->msg = (*jf_).str(); }
 			return true;
 		}
 	};

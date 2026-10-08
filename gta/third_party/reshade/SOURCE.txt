@@ -1,0 +1,1 @@
+ReShade add-on API headers at crosire/reshade 7bf9de8b33bcc76c3177007e65d73c72dd0f34c0 (BSD-3-Clause)

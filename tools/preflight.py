@@ -171,6 +171,34 @@ def check(stage):
         if o["bng_kind"] not in ("slab", "post", "proxy_vehicle", "none"):
             issues["MISMATCH"].append(f"obstacles[{o['id']}].bng_kind: unknown kind {o['bng_kind']}")
 
+    # Code against sheets: every GTA native a module calls is listed by a system living in that module,
+    # and every native a system lists is called by its module. Same for the BeamNG wrappers (api.<id>).
+    import re
+    by_module = {}
+    for s in systems.values():
+        by_module.setdefault(s["module"], []).append(s)
+    for module, owners in by_module.items():
+        path = os.path.join(ROOT, module)
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding="utf-8") as f:
+            code = f.read()
+        code = re.sub(r"//[^\n]*|--[^\n]*", "", code)
+        listed_n = {n for s in owners for n in s.get("natives", [])}
+        listed_b = {b for s in owners for b in s.get("bng_api", [])}
+        called_n = set(re.findall(r"\b[A-Z]+::([A-Z0-9_]+)\s*\(", code)) & set(natives)
+        called_b = set(re.findall(r"\bapi\.(?:ve\.)?([a-z0-9_]+)\s*\(", code)) & set(bng)
+        if module.endswith("scripthook.cpp"):
+            called_n |= {"PLAYER_ID"}  # detoured by name through settings.tick_native
+        for n in sorted(called_n - listed_n):
+            issues["MISMATCH"].append(f"{module} calls native {n} but no system row for that module lists it")
+        for n in sorted(listed_n - called_n):
+            issues["MISMATCH"].append(f"{module}: systems list native {n} but the code never calls it")
+        for b in sorted(called_b - listed_b):
+            issues["MISMATCH"].append(f"{module} uses bng_api {b} but no system row for that module lists it")
+        for b in sorted(listed_b - called_b):
+            issues["MISMATCH"].append(f"{module}: systems list bng_api {b} but the code never uses it")
+
     # Generated code freshness ------------------------------------------------------------------
     digest = sheets_digest()
     stamp = open(STAMP).read().strip() if os.path.exists(STAMP) else ""
