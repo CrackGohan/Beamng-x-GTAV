@@ -1,0 +1,8 @@
+{
+  "Name": "BeamNG x Los Santos traffic proxy",
+  "Brand": "BeamLS",
+  "Type": "Prop",
+  "Author": "BeamNG x Los Santos",
+  "default_pc": "medium",
+  "Description": "Invisible solid stand-in for a GTA V vehicle. Spawned by the mashup only."
+}

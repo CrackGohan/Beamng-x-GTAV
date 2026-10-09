@@ -1,0 +1,25 @@
+{
+  "sheet": "traffic_proxies",
+  "description": "The invisible solid BeamNG proxy that stands in for a GTA vehicle, by the GTA vehicle's size (from GET_MODEL_DIMENSIONS). First matching row wins. Each row generates one .pc config of the beamls_proxy jbeam (beamng/mod/vehicles/beamls_proxy) and one entry in gen/traffic_proxies.lua.",
+  "key": "id",
+  "columns": {
+    "id": "Config name",
+    "max_length": "GTA vehicle length up to, m",
+    "max_height": "GTA vehicle height up to, m",
+    "length": "Proxy box length, m",
+    "width": "Proxy box width, m",
+    "height": "Proxy box height, m",
+    "mass_kg": "Proxy mass, kg (what a ram carries)"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": "bike", "max_length": 2.6, "max_height": 1.6, "length": 2.2, "width": 0.8, "height": 1.2, "mass_kg": 250},
+    {"id": "small", "max_length": 4.3, "max_height": 1.6, "length": 4.0, "width": 1.8, "height": 1.45, "mass_kg": 1200},
+    {"id": "medium", "max_length": 5.1, "max_height": 1.7, "length": 4.8, "width": 1.9, "height": 1.5, "mass_kg": 1600},
+    {"id": "large", "max_length": 6.0, "max_height": 2.1, "length": 5.4, "width": 2.0, "height": 1.9, "mass_kg": 2300},
+    {"id": "van", "max_length": 7.0, "max_height": 3.0, "length": 5.6, "width": 2.1, "height": 2.5, "mass_kg": 2800},
+    {"id": "truck", "max_length": 10.0, "max_height": 4.5, "length": 8.0, "width": 2.5, "height": 3.2, "mass_kg": 8000},
+    {"id": "bus", "max_length": 99.0, "max_height": 9.9, "length": 12.0, "width": 2.6, "height": 3.5, "mass_kg": 12000}
+  ]
+}

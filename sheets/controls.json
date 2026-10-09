@@ -1,0 +1,25 @@
+{
+  "sheet": "controls",
+  "description": "GTA vehicle controls BeamLS.asi disables on the proxy car and forwards to BeamNG. GTA reads keyboard and gamepad into the same controls, so both work. Each row generates one entry of the control table in gta/src/gen/controls.hpp.",
+  "key": "id",
+  "columns": {
+    "id": "Row id",
+    "gta_control": "GTA control index (pad group 0)",
+    "gta_name": "GTA control name",
+    "kind": "axis (GET_DISABLED_CONTROL_NORMAL), button (IS_DISABLED_CONTROL_PRESSED) or press (IS_DISABLED_CONTROL_JUST_PRESSED)",
+    "field": "input message field it fills (sheet messages, row input) or none (only disabled)",
+    "scale": "Multiplier applied to the GTA value"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": "accelerate", "gta_control": 71, "gta_name": "INPUT_VEH_ACCELERATE", "kind": "axis", "field": "throttle", "scale": 1.0, "unverified": ["gta_control"]},
+    {"id": "brake", "gta_control": 72, "gta_name": "INPUT_VEH_BRAKE", "kind": "axis", "field": "brake", "scale": 1.0, "unverified": ["gta_control"], "notes": "BeamNG's arcade gearbox reverses on brake at standstill, like GTA."},
+    {"id": "steer", "gta_control": 59, "gta_name": "INPUT_VEH_MOVE_LR", "kind": "axis", "field": "steer", "scale": 1.0, "unverified": ["gta_control", "scale"], "notes": "Sign: GTA gives -1 for left; BeamNG steering -1 is left."},
+    {"id": "move_ud", "gta_control": 60, "gta_name": "INPUT_VEH_MOVE_UD", "kind": "axis", "field": "none", "scale": 0.0, "unverified": ["gta_control"]},
+    {"id": "handbrake", "gta_control": 76, "gta_name": "INPUT_VEH_HANDBRAKE", "kind": "button", "field": "handbrake", "scale": 1.0, "unverified": ["gta_control"]},
+    {"id": "horn", "gta_control": 86, "gta_name": "INPUT_VEH_HORN", "kind": "button", "field": "horn", "scale": 1.0, "unverified": ["gta_control"]},
+    {"id": "headlight", "gta_control": 74, "gta_name": "INPUT_VEH_HEADLIGHT", "kind": "press", "field": "lights", "scale": 1.0, "unverified": ["gta_control"]},
+    {"id": "duck", "gta_control": 73, "gta_name": "INPUT_VEH_DUCK", "kind": "button", "field": "none", "scale": 0.0, "unverified": ["gta_control"]}
+  ]
+}

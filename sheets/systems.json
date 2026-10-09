@@ -1,0 +1,801 @@
+{
+ "sheet": "systems",
+ "description": "Every system the mashup has and every hook into either game. One row per system; each row is one module of code. natives / bng_api / messages list what the system uses, so the preflight can check every call is defined.",
+ "key": "id",
+ "columns": {
+  "id": "System id",
+  "game": "gta-v or beamng-drive",
+  "process": "Binary it lives in: BeamLS.asi, BeamLS.addon64, BeamNG GE Lua",
+  "module": "Source file (path from repo root)",
+  "purpose": "What it does, one sentence",
+  "depends_on": "Systems it needs",
+  "natives": "GTA natives it calls (sheet natives)",
+  "bng_api": "BeamNG Lua calls it makes (sheet bng_api)",
+  "messages": "Bridge messages it sends or handles (sheet messages)",
+  "oracle": "How we know it works (log line, test, in-game check)"
+ },
+ "optional": [
+  "depends_on",
+  "natives",
+  "bng_api",
+  "messages"
+ ],
+ "refs": {
+  "depends_on": "systems",
+  "natives": "natives",
+  "bng_api": "bng_api",
+  "messages": "messages",
+  "game": "games"
+ },
+ "rows": [
+  {
+   "id": "gta_version",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/core/version.cpp",
+   "purpose": "Read GTA5.exe's file version, pick the matching native hash table or stay off",
+   "depends_on": [],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "BeamLS.log: 'GTA build 3889 supported'; unit test with fake versions"
+  },
+  {
+   "id": "gta_patterns",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/core/patterns.cpp",
+   "purpose": "Find the native registration table, the native lookup function, the script thread list and the TLS context offsets by byte pattern",
+   "depends_on": [
+    "gta_version"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "BeamLS.log lists every pattern with its address; unit test on synthetic bytes",
+   "unverified": [
+    "oracle"
+   ],
+   "notes": "Patterns must be confirmed on build 3889 in the running game."
+  },
+  {
+   "id": "gta_invoker",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/core/invoker.cpp",
+   "purpose": "Call GTA natives by original hash: translate with the build's table, look up the handler, run it with a scrNativeCallContext, copy vector results out",
+   "depends_on": [
+    "gta_patterns",
+    "gta_version"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Self-test at start: GET_GAME_TIMER grows, PLAYER_PED_ID != 0, GET_ENTITY_COORDS near the camera",
+   "unverified": [
+    "oracle"
+   ]
+  },
+  {
+   "id": "gta_script_tick",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/core/scripthook.cpp",
+   "purpose": "Run BeamLS's tick once per game frame on the game's script thread, inside a real script's context, so natives that need a script thread work",
+   "depends_on": [
+    "gta_patterns"
+   ],
+   "natives": [
+    "PLAYER_ID",
+    "GET_FRAME_COUNT"
+   ],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Tick counter in BeamLS.log matches GET_FRAME_COUNT; CREATE_VEHICLE returns a vehicle",
+   "unverified": [
+    "oracle"
+   ]
+  },
+  {
+   "id": "gta_online_guard",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/online_guard.cpp",
+   "purpose": "Shut BeamLS down for the rest of the session the moment GTA Online starts or is loading",
+   "depends_on": [
+    "gta_invoker"
+   ],
+   "natives": [
+    "NETWORK_IS_SESSION_STARTED",
+    "NETWORK_IS_GAME_IN_PROGRESS",
+    "GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH"
+   ],
+   "bng_api": [],
+   "messages": [
+    "mode"
+   ],
+   "oracle": "Pause menu > GTA Online: BeamLS.log 'online detected, shutting down', proxy car deleted, BeamNG told mode=off"
+  },
+  {
+   "id": "gta_bridge",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/net/bridge.cpp",
+   "purpose": "UDP socket to BeamNG on 127.0.0.1: hello/ack, send queue, receive latest of each message type",
+   "depends_on": [],
+   "natives": [],
+   "bng_api": [],
+   "messages": [
+    "hello",
+    "hello_ack",
+    "bye"
+   ],
+   "oracle": "tests/fake_beamng.py answers hello; tests/test_bridge.py round trip"
+  },
+  {
+   "id": "gta_camera_sync",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/camera.cpp",
+   "purpose": "Every frame send GTA's final rendered camera (position, quaternion, vertical FOV, near clip, viewport size) to BeamNG",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "GET_FINAL_RENDERED_CAM_COORD",
+    "GET_FINAL_RENDERED_CAM_ROT",
+    "GET_FINAL_RENDERED_CAM_FOV",
+    "GET_FINAL_RENDERED_CAM_NEAR_CLIP",
+    "INVALIDATE_IDLE_CAM"
+   ],
+   "bng_api": [],
+   "messages": [
+    "cam"
+   ],
+   "oracle": "Gold-box test: BeamNG draws a box at the GTA player's position; composite shows it on the player"
+  },
+  {
+   "id": "gta_input",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/input.cpp",
+   "purpose": "While the player drives the proxy car: disable GTA's own vehicle controls and send their values to BeamNG",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "DISABLE_CONTROL_ACTION",
+    "GET_DISABLED_CONTROL_NORMAL",
+    "IS_DISABLED_CONTROL_PRESSED",
+    "IS_DISABLED_CONTROL_JUST_PRESSED"
+   ],
+   "bng_api": [],
+   "messages": [
+    "input"
+   ],
+   "oracle": "Keyboard W/S/A/D and a gamepad move the BeamNG car; GTA's proxy never drives itself"
+  },
+  {
+   "id": "gta_proxy_car",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/proxy_car.cpp",
+   "purpose": "Create an invisible GTA car sized like the BeamNG car, keep it on the BeamNG car's pose and velocity, let the player get in and out of it",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge",
+    "gta_script_tick"
+   ],
+   "natives": [
+    "REQUEST_MODEL",
+    "HAS_MODEL_LOADED",
+    "IS_MODEL_IN_CDIMAGE",
+    "SET_MODEL_AS_NO_LONGER_NEEDED",
+    "CREATE_VEHICLE",
+    "DELETE_VEHICLE",
+    "DOES_ENTITY_EXIST",
+    "SET_ENTITY_AS_MISSION_ENTITY",
+    "SET_ENTITY_VISIBLE",
+    "SET_ENTITY_COLLISION",
+    "SET_ENTITY_INVINCIBLE",
+    "SET_ENTITY_PROOFS",
+    "SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED",
+    "SET_VEHICLE_DOORS_LOCKED",
+    "SET_VEHICLE_ENGINE_ON",
+    "SET_VEHICLE_FIXED",
+    "SET_ENTITY_COORDS_NO_OFFSET",
+    "SET_ENTITY_QUATERNION",
+    "SET_ENTITY_VELOCITY",
+    "SET_ENTITY_ANGULAR_VELOCITY",
+    "GET_ENTITY_COORDS",
+    "GET_ENTITY_HEADING",
+    "TASK_WARP_PED_INTO_VEHICLE",
+    "IS_ENTITY_IN_WATER",
+    "FORCE_USE_AUDIO_GAME_OBJECT",
+    "SET_VEHICLE_HAS_BEEN_OWNED_BY_PLAYER",
+    "GET_MODEL_DIMENSIONS"
+   ],
+   "bng_api": [],
+   "messages": [
+    "car",
+    "vehicle_info",
+    "spawn_at",
+    "mode"
+   ],
+   "oracle": "Proxy follows the BeamNG car within 0.2 m at 100 km/h (BeamLS.log drift stat); traffic brakes for it; player enters with F"
+  },
+  {
+   "id": "gta_ground_probe",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/world_probe.cpp",
+   "purpose": "Probe GTA's ground in a grid around (and ahead of) the car with downward shape tests and send the heights",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "START_SHAPE_TEST_LOS_PROBE",
+    "GET_SHAPE_TEST_RESULT",
+    "GET_ENTITY_COORDS"
+   ],
+   "bng_api": [],
+   "messages": [
+    "ground"
+   ],
+   "oracle": "BeamNG car drives up Vinewood hills and over the Del Perro freeway bridges without falling through"
+  },
+  {
+   "id": "gta_wall_probe",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/world_probe.cpp",
+   "purpose": "Cast a ring of horizontal shape tests around the car to find walls, poles and props and send the hits",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "START_SHAPE_TEST_LOS_PROBE",
+    "GET_SHAPE_TEST_RESULT",
+    "GET_ENTITY_TYPE",
+    "GET_ENTITY_MODEL",
+    "GET_MODEL_DIMENSIONS"
+   ],
+   "bng_api": [],
+   "messages": [
+    "walls"
+   ],
+   "oracle": "Driving into a wall at 50 km/h crumples the BeamNG car's front; no ghost hits on open road"
+  },
+  {
+   "id": "gta_traffic",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/traffic.cpp",
+   "purpose": "List GTA vehicles near the car (traffic, police) with pose, velocity, size and class and send them",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "GET_PED_NEARBY_VEHICLES",
+    "GET_ENTITY_COORDS",
+    "GET_ENTITY_QUATERNION",
+    "GET_ENTITY_VELOCITY",
+    "GET_ENTITY_MODEL",
+    "GET_MODEL_DIMENSIONS",
+    "GET_VEHICLE_CLASS",
+    "DOES_ENTITY_EXIST"
+   ],
+   "bng_api": [],
+   "messages": [
+    "traffic"
+   ],
+   "oracle": "Ramming a parked car dents both; a cop ram at 3 stars dents the BeamNG car"
+  },
+  {
+   "id": "gta_hotkeys",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/hotkeys.cpp",
+   "purpose": "F6 opens BeamNG's vehicle selector, F7 its tuning; also the repair prompt key",
+   "depends_on": [
+    "gta_bridge",
+    "gta_focus"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [
+    "mode",
+    "menu_closed"
+   ],
+   "oracle": "F6 in GTA brings BeamNG's vehicle selector to the front within 1 s"
+  },
+  {
+   "id": "gta_focus",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/core/platform_win.cpp",
+   "purpose": "Find the BeamNG and GTA windows and switch keyboard focus between them for the menus",
+   "depends_on": [],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Focus returns to GTA after the BeamNG menu closes, without the player clicking",
+   "unverified": [
+    "oracle"
+   ],
+   "notes": "Windows foreground lock: GTA gives focus away (allowed), taking it back needs AllowSetForegroundWindow from BeamNG or the Alt trick."
+  },
+  {
+   "id": "gta_repair_zones",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/repair.cpp",
+   "purpose": "When the BeamNG car stops at a Los Santos Customs door, offer and perform a repair",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge",
+    "gta_hud",
+    "gta_proxy_car"
+   ],
+   "natives": [
+    "IS_DISABLED_CONTROL_JUST_PRESSED",
+    "DISABLE_CONTROL_ACTION"
+   ],
+   "bng_api": [],
+   "messages": [
+    "repair"
+   ],
+   "oracle": "Stop at LSC Burton with a dented car, press E: the BeamNG car is repaired"
+  },
+  {
+   "id": "gta_time_sync",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/time_sync.cpp",
+   "purpose": "Send GTA's clock so BeamNG's sun matches",
+   "depends_on": [
+    "gta_invoker",
+    "gta_bridge"
+   ],
+   "natives": [
+    "GET_CLOCK_HOURS",
+    "GET_CLOCK_MINUTES"
+   ],
+   "bng_api": [],
+   "messages": [
+    "time"
+   ],
+   "oracle": "At 21:00 in GTA the BeamNG car is lit for night"
+  },
+  {
+   "id": "gta_hud",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/hud.cpp",
+   "purpose": "Show help text and notifications in GTA's own HUD",
+   "depends_on": [
+    "gta_invoker"
+   ],
+   "natives": [
+    "BEGIN_TEXT_COMMAND_DISPLAY_HELP",
+    "ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME",
+    "END_TEXT_COMMAND_DISPLAY_HELP",
+    "BEGIN_TEXT_COMMAND_THEFEED_POST",
+    "END_TEXT_COMMAND_THEFEED_POST_TICKER"
+   ],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Help text 'Press F6 to choose a BeamNG car' appears in story mode"
+  },
+  {
+   "id": "gta_state_gate",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/state_gate.cpp",
+   "purpose": "Pause the mashup during loading screens, cutscenes, character switches, death and the pause menu",
+   "depends_on": [
+    "gta_invoker"
+   ],
+   "natives": [
+    "GET_IS_LOADING_SCREEN_ACTIVE",
+    "IS_CUTSCENE_ACTIVE",
+    "IS_PLAYER_SWITCH_IN_PROGRESS",
+    "IS_SCREEN_FADED_OUT",
+    "IS_PLAYER_DEAD",
+    "PLAYER_ID",
+    "IS_PAUSE_MENU_ACTIVE"
+   ],
+   "bng_api": [],
+   "messages": [
+    "mode"
+   ],
+   "oracle": "Switching to Trevor and back keeps the BeamNG car parked where it was"
+  },
+  {
+   "id": "gta_main",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/main.cpp",
+   "purpose": "The mashup's state machine (off, waiting for BeamNG, on foot, driving, menu) run once per script tick",
+   "depends_on": [
+    "gta_script_tick",
+    "gta_online_guard",
+    "gta_state_gate",
+    "gta_bridge",
+    "gta_camera_sync",
+    "gta_input",
+    "gta_proxy_car",
+    "gta_ground_probe",
+    "gta_wall_probe",
+    "gta_traffic",
+    "gta_hotkeys",
+    "gta_repair_zones",
+    "gta_time_sync",
+    "gta_hud",
+    "gta_composite_state"
+   ],
+   "natives": [
+    "IS_PED_IN_VEHICLE",
+    "PLAYER_PED_ID"
+   ],
+   "bng_api": [],
+   "messages": [
+    "mode",
+    "status"
+   ],
+   "oracle": "BeamLS.log state transitions match a scripted play session"
+  },
+  {
+   "id": "gta_composite_state",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/game/composite_state.cpp",
+   "purpose": "Publish what the compositor needs (BeamNG car OBB, camera used for BeamNG's last frame, whether to draw) through an export",
+   "depends_on": [
+    "gta_bridge"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [
+    "car"
+   ],
+   "oracle": "Add-on overlay shows the state values live"
+  },
+  {
+   "id": "gta_capture",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/addon/capture.cpp",
+   "purpose": "Capture BeamNG's window with Windows Graphics Capture straight onto GTA's D3D11 device",
+   "depends_on": [
+    "gta_composite_state"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Add-on overlay shows capture size and frames per second",
+   "unverified": [
+    "oracle"
+   ]
+  },
+  {
+   "id": "gta_compositor",
+   "game": "gta-v",
+   "process": "BeamLS.asi",
+   "module": "gta/src/addon/compositor.cpp",
+   "purpose": "ReShade effect pass: key out BeamNG's background, depth-test the car against GTA's depth buffer using the car's box, re-project to the current camera",
+   "depends_on": [
+    "gta_capture",
+    "gta_composite_state"
+   ],
+   "natives": [],
+   "bng_api": [],
+   "messages": [],
+   "oracle": "Lamp posts in front of the car hide it; the car stays glued to the road at 150 km/h in chase cam",
+   "unverified": [
+    "oracle"
+   ]
+  },
+  {
+   "id": "bng_listener",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/listener.lua",
+   "purpose": "Loaded by the mod's modScript in every BeamNG session; binds the bridge port and does nothing until BeamLS.asi says hello",
+   "depends_on": [],
+   "natives": [],
+   "bng_api": [
+    "socket_udp",
+    "ext_load",
+    "json_encode",
+    "json_decode"
+   ],
+   "messages": [
+    "hello",
+    "hello_ack"
+   ],
+   "oracle": "BeamNG log 'beamls listener on 47011'; tests/fake_gta.py gets hello_ack"
+  },
+  {
+   "id": "bng_session",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/session.lua",
+   "purpose": "On hello: load the empty level, hide sky and ground, set the key colour background, hide the UI, keep simulating in the background",
+   "depends_on": [
+    "bng_listener"
+   ],
+   "natives": [],
+   "bng_api": [
+    "start_freeroam",
+    "get_level_name",
+    "find_object",
+    "hide_object",
+    "set_clear_color",
+    "ui_hide",
+    "sim_pause",
+    "ui_show"
+   ],
+   "messages": [
+    "status",
+    "mode",
+    "bye"
+   ],
+   "oracle": "Screenshot of BeamNG shows only the car on flat magenta"
+  },
+  {
+   "id": "bng_camera",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/camera.lua",
+   "purpose": "Put BeamNG's free camera exactly where GTA's camera is each frame (pose and FOV)",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "cam_free",
+    "cam_set_pos_rot",
+    "cam_set_fov"
+   ],
+   "messages": [
+    "cam"
+   ],
+   "oracle": "Gold-box test (see gta_camera_sync)"
+  },
+  {
+   "id": "bng_player_car",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/player_car.lua",
+   "purpose": "Spawn and place the player's BeamNG car, report its pose, velocity, box and damage every frame, and report what car it is",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "get_player_vehicle",
+    "veh_get_position",
+    "veh_get_rotation",
+    "veh_get_velocity",
+    "veh_get_bbox",
+    "veh_set_pos_rot",
+    "veh_get_model",
+    "spawn_vehicle",
+    "veh_queue_lua",
+    "veh_get_damage",
+    "veh_get_id"
+   ],
+   "messages": [
+    "car",
+    "vehicle_info",
+    "spawn_at"
+   ],
+   "oracle": "tests/fake_gta.py receives car at 60 Hz with sane values"
+  },
+  {
+   "id": "bng_input",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/input.lua",
+   "purpose": "Apply GTA's controls to the player's BeamNG car through the vehicle VM's input system",
+   "depends_on": [
+    "bng_player_car"
+   ],
+   "natives": [],
+   "bng_api": [
+    "veh_queue_lua",
+    "ve_input_event",
+    "ve_input_allowed_source",
+    "ve_horn",
+    "ve_lights"
+   ],
+   "messages": [
+    "input"
+   ],
+   "oracle": "Throttle 1.0 from fake_gta.py accelerates the car in BeamNG"
+  },
+  {
+   "id": "bng_ground",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/world.lua",
+   "purpose": "Turn GTA's ground heights into invisible collision slabs under and ahead of the car",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "create_tsstatic",
+    "delete_object",
+    "reload_static_collision",
+    "set_object_transform"
+   ],
+   "messages": [
+    "ground"
+   ],
+   "oracle": "Car rests on slabs at GTA's ground height (BeamNG log height error < 5 cm)"
+  },
+  {
+   "id": "bng_walls",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/world.lua",
+   "purpose": "Turn GTA's wall and prop hits into invisible collision slabs and posts",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "create_tsstatic",
+    "delete_object",
+    "reload_static_collision",
+    "set_object_transform"
+   ],
+   "messages": [
+    "walls"
+   ],
+   "oracle": "Crash into a GTA wall deforms the car at the right moment"
+  },
+  {
+   "id": "bng_traffic",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/traffic.lua",
+   "purpose": "Mirror nearby GTA vehicles as invisible solid BeamNG proxies that follow GTA's poses and velocities",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "spawn_vehicle",
+    "delete_object",
+    "veh_set_cluster_pos_rot",
+    "veh_apply_cluster_velocity",
+    "veh_get_ref_node",
+    "veh_get_velocity",
+    "veh_get_rotation",
+    "enter_vehicle",
+    "get_player_vehicle"
+   ],
+   "messages": [
+    "traffic"
+   ],
+   "oracle": "Proxy box follows a moving GTA car within 0.3 m; ramming it deforms the player car"
+  },
+  {
+   "id": "bng_menu",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/menu.lua",
+   "purpose": "Open BeamNG's vehicle selector or tuning menu on request, pause physics while open, tell GTA when the player is done",
+   "depends_on": [
+    "bng_session",
+    "bng_player_car"
+   ],
+   "natives": [],
+   "bng_api": [
+    "ui_open_vehicles",
+    "ui_open_tuning",
+    "ui_show",
+    "ui_hide",
+    "allow_set_foreground"
+   ],
+   "messages": [
+    "mode",
+    "menu_closed",
+    "vehicle_info"
+   ],
+   "oracle": "F6 in GTA shows BeamNG's vehicle selector; picking a car and pressing F6 in BeamNG returns to GTA with the new car"
+  },
+  {
+   "id": "bng_repair",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/player_car.lua",
+   "purpose": "Repair the player's car in place",
+   "depends_on": [
+    "bng_player_car"
+   ],
+   "natives": [],
+   "bng_api": [
+    "veh_queue_lua",
+    "ve_reset_physics",
+    "veh_reset_flexmesh"
+   ],
+   "messages": [
+    "repair"
+   ],
+   "oracle": "Damage value drops to 0 after repair; car keeps its place"
+  },
+  {
+   "id": "bng_time",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/session.lua",
+   "purpose": "Set BeamNG's time of day from GTA's clock",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "set_time_of_day"
+   ],
+   "messages": [
+    "time"
+   ],
+   "oracle": "Sun direction changes when GTA's clock passes noon"
+  },
+  {
+   "id": "bng_water",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/world.lua",
+   "purpose": "Add an invisible ocean water plane at GTA's sea level so the car floats and sinks in the Pacific",
+   "depends_on": [
+    "bng_session"
+   ],
+   "natives": [],
+   "bng_api": [
+    "create_water_plane"
+   ],
+   "messages": [],
+   "oracle": "Driving off Del Perro pier: the car floats and sinks"
+  },
+  {
+   "id": "bng_main",
+   "game": "beamng-drive",
+   "process": "BeamNG GE Lua",
+   "module": "beamng/mod/lua/ge/extensions/beamls/main.lua",
+   "purpose": "Session extension: dispatches bridge messages to the systems each frame and sends the car state",
+   "depends_on": [
+    "bng_listener",
+    "bng_session",
+    "bng_camera",
+    "bng_player_car",
+    "bng_input",
+    "bng_ground",
+    "bng_walls",
+    "bng_traffic",
+    "bng_menu",
+    "bng_repair",
+    "bng_time",
+    "bng_water"
+   ],
+   "natives": [],
+   "bng_api": [
+    "ui_state_hook"
+   ],
+   "messages": [
+    "mode",
+    "status"
+   ],
+   "oracle": "tests/test_beamng_lua.lua drives the whole extension with stubs"
+  }
+ ]
+}

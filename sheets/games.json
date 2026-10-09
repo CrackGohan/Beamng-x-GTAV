@@ -1,0 +1,49 @@
+{
+  "sheet": "games",
+  "description": "The games the mashup needs. One row per game. supported_builds drives which native hash tables must be filled.",
+  "key": "id",
+  "columns": {
+    "id": "Melty game slug",
+    "name": "Display name",
+    "role": "primary (host, Melty installs into it and starts it) or companion (runs alongside, Melty passes its folder)",
+    "engine": "Engine and scripting language",
+    "stores": "Stores the mashup supports",
+    "version_range": "Melty recipe version range for this game",
+    "supported_builds": "Exact builds the mod has data for (GTA: native hash tables)",
+    "loader": "Loader the mashup needs; must be one Melty installs, or none",
+    "exe": "Process image name the mod checks for",
+    "brings": "What this game really brings into the mashup"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {
+      "id": "gta-v",
+      "name": "Grand Theft Auto V Legacy",
+      "role": "primary",
+      "engine": "RAGE (C++, natives called by hash)",
+      "stores": ["steam", "epic"],
+      "version_range": "=1.0.3889.0",
+      "supported_builds": ["3889"],
+      "loader": "ultimate-asi-loader",
+      "exe": "GTA5.exe",
+      "brings": "Los Santos: roads, buildings, traffic, pedestrians, police and wanted level, camera, time of day, radio, Los Santos Customs",
+      "unverified": ["version_range"],
+      "notes": "Widen version_range when another build gets a filled hash table (sheet natives, column xmap)."
+    },
+    {
+      "id": "beamng-drive",
+      "name": "BeamNG.drive",
+      "role": "companion",
+      "engine": "BeamNG (Torque3D fork, Lua: GE + vehicle VMs, CEF UI)",
+      "stores": ["steam"],
+      "version_range": ">=0.37.0",
+      "supported_builds": ["0.39"],
+      "loader": "none",
+      "exe": "BeamNG.drive.x64.exe",
+      "brings": "The player's car: every vehicle and configuration in the player's install, its soft-body physics and damage, its parts selector and tuning",
+      "unverified": ["version_range", "exe"],
+      "notes": "0.37 moved the user folder to %LOCALAPPDATA%/BeamNG/BeamNG.drive/current."
+    }
+  ]
+}

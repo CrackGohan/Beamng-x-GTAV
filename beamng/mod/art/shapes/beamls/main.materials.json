@@ -1,0 +1,29 @@
+{
+  "beamls_key": {
+    "name": "beamls_key",
+    "mapTo": "beamls_key",
+    "class": "Material",
+    "version": 1.5,
+    "Stages": [
+      {
+        "baseColorFactor": [
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "emissiveFactor": [
+          1.0,
+          0.0,
+          1.0
+        ]
+      },
+      {},
+      {},
+      {}
+    ],
+    "castShadows": false,
+    "translucent": false,
+    "materialTag0": "beamls"
+  }
+}

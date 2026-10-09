@@ -1,0 +1,23 @@
+{
+  "sheet": "garages",
+  "description": "Los Santos Customs doors where the BeamNG car can be repaired. One row per garage; each generates one entry in gta/src/gen/garages.hpp. Coordinates are the area in front of the door.",
+  "key": "id",
+  "columns": {
+    "id": "Garage id (sent in repair.garage)",
+    "name": "Name shown to the player",
+    "x": "GTA x, m",
+    "y": "GTA y, m",
+    "z": "GTA z, m",
+    "radius": "Zone radius, m",
+    "cost": "Price in GTA dollars (0 = free)"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": "lsc_burton", "name": "Los Santos Customs, Burton", "x": -337.39, "y": -136.92, "z": 39.07, "radius": 9.0, "cost": 0, "unverified": ["x", "y", "z"]},
+    {"id": "lsc_lamesa", "name": "Los Santos Customs, La Mesa", "x": 731.82, "y": -1088.82, "z": 22.23, "radius": 9.0, "cost": 0, "unverified": ["x", "y", "z"]},
+    {"id": "lsc_airport", "name": "Los Santos Customs, LSIA", "x": -1155.54, "y": -2007.18, "z": 13.24, "radius": 9.0, "cost": 0, "unverified": ["x", "y", "z"]},
+    {"id": "lsc_route68", "name": "Los Santos Customs, Route 68", "x": 1175.04, "y": 2640.21, "z": 37.75, "radius": 9.0, "cost": 0, "unverified": ["x", "y", "z"]},
+    {"id": "beekers_paleto", "name": "Beeker's Garage, Paleto Bay", "x": 110.84, "y": 6626.57, "z": 32.29, "radius": 9.0, "cost": 0, "unverified": ["x", "y", "z"]}
+  ]
+}

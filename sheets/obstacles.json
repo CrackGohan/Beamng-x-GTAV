@@ -1,0 +1,26 @@
+{
+  "sheet": "obstacles",
+  "description": "How each kind of GTA thing near the car becomes something solid in BeamNG. One row per obstacle class; the id is sent in walls.hits.kind. Each row generates one entry of the obstacle table on both sides (gta/src/gen/obstacles.hpp, beamng gen/obstacles.lua).",
+  "key": "id",
+  "columns": {
+    "id": "Class id (integer, sent on the wire)",
+    "name": "Class name",
+    "source": "Where GTA finds it",
+    "bng_kind": "slab (static box), post (static box sized from the prop), proxy_vehicle (solid moving proxy), none",
+    "shape": "BeamNG shape or vehicle used",
+    "width": "Box size along the surface, m (slab/post) or from GTA (proxy)",
+    "thickness": "Box size into the surface, m",
+    "height": "Box height, m",
+    "max_count": "Most alive at once",
+    "lifetime_ms": "Removed when not seen again for this long"
+  },
+  "optional": [],
+  "refs": {},
+  "rows": [
+    {"id": 0, "name": "ground", "source": "ground message grid (downward probes)", "bng_kind": "slab", "shape": "/art/shapes/beamls/slab.dae", "width": 2.0, "thickness": 1.0, "height": 1.0, "max_count": 289, "lifetime_ms": 2000, "notes": "One slab per grid cell, top face through the cell's four corner heights (best-fit plane).", "unverified": ["shape"]},
+    {"id": 1, "name": "wall", "source": "horizontal probe hit with no entity (map collision: buildings, walls, barriers, trees)", "bng_kind": "slab", "shape": "/art/shapes/beamls/slab.dae", "width": 1.6, "thickness": 0.8, "height": 3.0, "max_count": 160, "lifetime_ms": 6000, "unverified": ["shape"]},
+    {"id": 2, "name": "prop", "source": "horizontal probe hit on an object entity wider than settings.prop_min_size (bollards, concrete blocks, dumpsters)", "bng_kind": "post", "shape": "/art/shapes/beamls/slab.dae", "width": 0.0, "thickness": 0.0, "height": 1.5, "max_count": 40, "lifetime_ms": 6000, "notes": "width/thickness come from the prop's model size (hits.size). Thinner props (lamp posts, signs, hydrants) break off in GTA, so they are not mirrored.", "unverified": ["shape"]},
+    {"id": 3, "name": "vehicle", "source": "traffic message (GET_PED_NEARBY_VEHICLES)", "bng_kind": "proxy_vehicle", "shape": "beamls_proxy", "width": 0.0, "thickness": 0.0, "height": 0.0, "max_count": 12, "lifetime_ms": 1000, "notes": "Size class from sheet traffic_proxies.", "unverified": ["shape"]},
+    {"id": 4, "name": "ped", "source": "none: GTA handles pedestrians hitting the proxy car", "bng_kind": "none", "shape": "none", "width": 0.0, "thickness": 0.0, "height": 0.0, "max_count": 0, "lifetime_ms": 0}
+  ]
+}
